@@ -9,3 +9,17 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id            String        @id
+  email         String        @unique
+  uid           String        @unique
+  name          String        @default("")
+  phoneNum      String        @default("")
+  address       String        @default("")
+  photo         String        @default("https://placehold.co/500x500.png")
+  token         String        @default("")
+  role          String        @default("user")
+
+  @@map("user")
+}
