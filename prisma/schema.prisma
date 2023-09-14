@@ -23,3 +23,13 @@ model User {
 
   @@map("user")
 }
+
+model Article {
+  id            String        @id
+  title         String        @default("")
+  url           String        @default("")
+  image         String        @default("")
+  published     Int           @default(0)
+
+  @@map("article")
+}
