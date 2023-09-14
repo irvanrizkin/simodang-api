@@ -20,6 +20,7 @@ model User {
   photo         String        @default("https://placehold.co/500x500.png")
   token         String        @default("")
   role          String        @default("user")
+  createdAt     DateTime      @default(now())
 
   @@map("user")
 }
@@ -30,6 +31,7 @@ model Article {
   url           String        @default("")
   image         String        @default("")
   published     Int           @default(0)
+  createdAt     DateTime      @default(now())
 
   @@map("article")
 }
