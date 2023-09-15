@@ -5,9 +5,10 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ArticlesModule } from './articles/articles.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { MastersModule } from './masters/masters.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), AuthModule, ArticlesModule, NotificationsModule],
+  imports: [ConfigModule.forRoot(), AuthModule, ArticlesModule, NotificationsModule, MastersModule],
   controllers: [AppController],
   providers: [AppService],
 })
