@@ -23,6 +23,7 @@ model User {
   createdAt     DateTime      @default(now())
   notifications Notification[]
   masters       Master[]
+  devices       Device[]
 
   @@map("user")
 }
@@ -56,6 +57,29 @@ model Master {
   simNumber     String        @default("")
   user          User?         @relation(fields: [userId], references: [id])
   userId        String?
+  devices       Device[]
 
   @@map("master")
+}
+
+model Device {
+  id                    String        @id
+  name                  String        @default("")
+  notificationEnabled   Int           @default(1)
+  tempLow               Decimal       @default(26)    @db.Decimal(10,1)
+  tempHigh              Decimal       @default(30)    @db.Decimal(10,1)
+  phLow                 Decimal       @default(6.5)   @db.Decimal(10,1)
+  phHigh                Decimal       @default(8)     @db.Decimal(10,1)
+  tdoLow                Decimal       @default(4)     @db.Decimal(10,1)
+  tdoHigh               Decimal       @default(6)     @db.Decimal(10,1)
+  tdsLow                Decimal       @default(300)   @db.Decimal(10,1)
+  tdsHigh               Decimal       @default(600)   @db.Decimal(10,1)
+  turbiditiesLow        Decimal       @default(8.6)   @db.Decimal(10,1)
+  turbiditiesHigh       Decimal       @default(17.3)  @db.Decimal(10,1)
+  user                  User?         @relation(fields: [userId], references: [id])
+  userId                String?
+  master                Master?       @relation(fields: [masterId], references: [id])
+  masterId              String?
+
+  @@map("device")
 }

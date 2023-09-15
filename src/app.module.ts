@@ -6,9 +6,10 @@ import { ConfigModule } from '@nestjs/config';
 import { ArticlesModule } from './articles/articles.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { MastersModule } from './masters/masters.module';
+import { DevicesModule } from './devices/devices.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), AuthModule, ArticlesModule, NotificationsModule, MastersModule],
+  imports: [ConfigModule.forRoot(), AuthModule, ArticlesModule, NotificationsModule, MastersModule, DevicesModule],
   controllers: [AppController],
   providers: [AppService],
 })
