@@ -46,4 +46,16 @@ export class PondsController {
 
     return this.pondsService.update(id, updatePondDto, userId);
   }
+
+  @Patch(':id/device')
+  @UseGuards(TokenGuard)
+  updateDeviceProperties(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() updatePondDto: UpdatePondDto,
+  ) {
+    const { id: userId } = req.user;
+
+    return this.pondsService.updateDeviceProperties(id, updatePondDto, userId);
+  }
 }

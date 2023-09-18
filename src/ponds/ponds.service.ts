@@ -37,6 +37,7 @@ export class PondsService {
   async findOne(id: string) {
     const pond = await this.prisma.pond.findUnique({
       where: { id },
+      include: { device: true },
     });
 
     if (!pond) {
@@ -69,6 +70,65 @@ export class PondsService {
         imageUrl,
         isFilled,
         seedDate,
+      },
+    });
+  }
+
+  async updateDeviceProperties(
+    id: string,
+    updatePondDto: UpdatePondDto,
+    userId: string,
+  ) {
+    const {
+      notificationEnabled,
+      tempLow,
+      tempHigh,
+      phLow,
+      phHigh,
+      tdoLow,
+      tdoHigh,
+      tdsLow,
+      tdsHigh,
+      turbiditiesLow,
+      turbiditiesHigh,
+    } = updatePondDto;
+    const pond = await this.findOne(id);
+
+    if (!pond) {
+      throw new NotFoundException('pond not found');
+    }
+
+    if (userId !== pond.userId) {
+      throw new ForbiddenException('this pond not yours');
+    }
+
+    if (!pond.deviceId) {
+      throw new NotFoundException('no device attached in this pond');
+    }
+
+    return await this.prisma.pond.update({
+      where: { id },
+      data: {
+        device: {
+          update: {
+            data: {
+              notificationEnabled,
+              tempLow,
+              tempHigh,
+              phLow,
+              phHigh,
+              tdoLow,
+              tdoHigh,
+              tdsLow,
+              tdsHigh,
+              turbiditiesLow,
+              turbiditiesHigh,
+            },
+          },
+        },
+      },
+      include: {
+        device: true,
       },
     });
   }
