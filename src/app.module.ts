@@ -7,9 +7,10 @@ import { ArticlesModule } from './articles/articles.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { MastersModule } from './masters/masters.module';
 import { DevicesModule } from './devices/devices.module';
+import { PondsModule } from './ponds/ponds.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), AuthModule, ArticlesModule, NotificationsModule, MastersModule, DevicesModule],
+  imports: [ConfigModule.forRoot(), AuthModule, ArticlesModule, NotificationsModule, MastersModule, DevicesModule, PondsModule],
   controllers: [AppController],
   providers: [AppService],
 })

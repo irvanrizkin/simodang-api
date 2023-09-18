@@ -24,6 +24,7 @@ model User {
   notifications Notification[]
   masters       Master[]
   devices       Device[]
+  ponds         Pond[]
 
   @@map("user")
 }
@@ -80,6 +81,24 @@ model Device {
   userId                String?
   master                Master?       @relation(fields: [masterId], references: [id])
   masterId              String?
+  pond                  Pond?
 
   @@map("device")
+}
+
+model Pond {
+  id                    String        @id
+  name                  String        @default("")
+  address               String        @default("")
+  city                  String        @default("")
+  seedDate              DateTime      @default(now())
+  imageUrl              String        @default("https://placehold.co/1280x720.png")
+  status                Int           @default(0)
+  isFilled              Int           @default(0)
+  user                  User?         @relation(fields: [userId], references: [id])
+  userId                String?
+  device                Device?       @relation(fields: [deviceId], references: [id])
+  deviceId              String?       @unique
+
+  @@map("pond")
 }
