@@ -29,4 +29,11 @@ export class AuthService {
       },
     });
   }
+
+  async logout(id: string) {
+    return await this.prisma.user.update({
+      where: { id },
+      data: { token: '' },
+    });
+  }
 }
