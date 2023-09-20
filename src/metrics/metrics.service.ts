@@ -5,12 +5,14 @@ import { randomBytes } from 'crypto';
 import { MetricQueryDto } from './dto/metric-query.dto';
 import { DevicesService } from 'src/devices/devices.service';
 import { Prisma } from '@prisma/client';
+import { SocketGateway } from 'src/socket/socket.gateway';
 
 @Injectable()
 export class MetricsService {
   constructor(
     private prisma: PrismaService,
     private devicesService: DevicesService,
+    private socketGateway: SocketGateway,
   ) {}
 
   async create(createMetricDto: CreateMetricDto) {
@@ -32,6 +34,17 @@ export class MetricsService {
       const device = await this.devicesService.findOne(deviceId);
       if (device.pond) {
         pondId = device.pond.id;
+
+        this.socketGateway.sendMessage(pondId, {
+          deviceId,
+          pondId,
+          temperature,
+          ph,
+          tdo,
+          tds,
+          turbidity,
+          createdAt,
+        });
       }
     }
 

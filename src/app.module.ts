@@ -10,6 +10,7 @@ import { DevicesModule } from './devices/devices.module';
 import { PondsModule } from './ponds/ponds.module';
 import { UsersModule } from './users/users.module';
 import { MetricsModule } from './metrics/metrics.module';
+import { SocketModule } from './socket/socket.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MetricsModule } from './metrics/metrics.module';
     PondsModule,
     UsersModule,
     MetricsModule,
+    SocketModule,
   ],
   controllers: [AppController],
   providers: [AppService],
