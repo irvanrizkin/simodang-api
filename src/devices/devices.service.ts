@@ -24,7 +24,7 @@ export class DevicesService {
     return await this.prisma.device.findMany();
   }
 
-  async findAllByDevice(userId: string) {
+  async findAllByUser(userId: string) {
     return await this.prisma.device.findMany({
       where: { userId },
     });
