@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
@@ -24,8 +25,11 @@ export class DevicesController {
   }
 
   @Get()
-  findAll() {
-    return this.devicesService.findAll();
+  @UseGuards(TokenGuard)
+  findAllByDevice(@Request() req) {
+    const { id } = req.user;
+
+    return this.devicesService.findAllByDevice(id);
   }
 
   @Get(':id')

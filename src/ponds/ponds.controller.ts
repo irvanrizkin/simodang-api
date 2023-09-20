@@ -26,8 +26,11 @@ export class PondsController {
   }
 
   @Get()
-  findAll() {
-    return this.pondsService.findAll();
+  @UseGuards(TokenGuard)
+  findAllByUser(@Request() req) {
+    const { id } = req.user;
+
+    return this.pondsService.findAllByUser(id);
   }
 
   @Get(':id')

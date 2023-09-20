@@ -24,6 +24,12 @@ export class DevicesService {
     return await this.prisma.device.findMany();
   }
 
+  async findAllByDevice(userId: string) {
+    return await this.prisma.device.findMany({
+      where: { userId },
+    });
+  }
+
   async findOne(id: string) {
     return await this.prisma.device.findUnique({
       where: { id },

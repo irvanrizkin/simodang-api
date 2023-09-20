@@ -34,6 +34,12 @@ export class PondsService {
     return this.prisma.pond.findMany();
   }
 
+  async findAllByUser(userId: string) {
+    return this.prisma.pond.findMany({
+      where: { userId },
+    });
+  }
+
   async findOne(id: string) {
     const pond = await this.prisma.pond.findUnique({
       where: { id },
