@@ -27,6 +27,7 @@ export class DevicesService {
   async findOne(id: string) {
     return await this.prisma.device.findUnique({
       where: { id },
+      include: { pond: true },
     });
   }
 
