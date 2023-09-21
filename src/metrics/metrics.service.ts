@@ -27,15 +27,30 @@ export class MetricsService {
     } = createMetricDto;
 
     const id = `MET${randomBytes(5).toString('hex')}`;
+    const tempId = `TMP${randomBytes(5).toString('hex')}`;
 
     let pondId: string | null = null;
 
-    if (deviceId) {
-      const device = await this.devicesService.findOne(deviceId);
-      if (device.pond) {
-        pondId = device.pond.id;
+    const device = await this.devicesService.findOne(deviceId ?? '');
+    if (device && device.pond) {
+      pondId = device.pond.id;
 
-        this.socketGateway.sendMessage(pondId, {
+      this.socketGateway.sendMessage(pondId, {
+        deviceId,
+        pondId,
+        temperature,
+        ph,
+        tdo,
+        tds,
+        turbidity,
+        createdAt,
+      });
+    }
+
+    if (device && device.isSaved === 1) {
+      return await this.prisma.metric.create({
+        data: {
+          id,
           deviceId,
           pondId,
           temperature,
@@ -44,13 +59,29 @@ export class MetricsService {
           tds,
           turbidity,
           createdAt,
-        });
-      }
+        },
+      });
     }
 
-    return await this.prisma.metric.create({
+    if (device && device.isSaved === 0) {
+      return await this.prisma.metricTemp.create({
+        data: {
+          id: tempId,
+          deviceId,
+          pondId,
+          temperature,
+          ph,
+          tdo,
+          tds,
+          turbidity,
+          createdAt,
+        },
+      });
+    }
+
+    return await this.prisma.metricTemp.create({
       data: {
-        id,
+        id: tempId,
         deviceId,
         pondId,
         temperature,

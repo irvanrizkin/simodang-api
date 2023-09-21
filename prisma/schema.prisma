@@ -68,6 +68,7 @@ model Device {
   id                    String        @id
   name                  String        @default("")
   notificationEnabled   Int           @default(1)
+  isSaved               Int           @default(0)
   tempLow               Decimal       @default(26)    @db.Decimal(10,1)
   tempHigh              Decimal       @default(30)    @db.Decimal(10,1)
   phLow                 Decimal       @default(6.5)   @db.Decimal(10,1)
@@ -85,6 +86,7 @@ model Device {
   masterId              String?
   pond                  Pond?
   metrics               Metric[]
+  metricsTemp           MetricTemp[]
 
   @@map("device")
 }
@@ -104,6 +106,7 @@ model Pond {
   device                Device?       @relation(fields: [deviceId], references: [id])
   deviceId              String?       @unique
   metrics               Metric[]
+  metricsTemp           MetricTemp[]
 
   @@map("pond")
 }
@@ -122,4 +125,20 @@ model Metric {
   pondId                String?
 
   @@map("metric")
+}
+
+model MetricTemp {
+  id                    String        @id
+  temperature           Decimal       @default(0)       @db.Decimal(10,1)
+  ph                    Decimal       @default(0)       @db.Decimal(10,1)
+  tdo                   Decimal       @default(0)       @db.Decimal(10,1)
+  tds                   Decimal       @default(0)       @db.Decimal(10,1)
+  turbidity             Decimal       @default(0)       @db.Decimal(10,1)
+  createdAt             DateTime      @default(now())
+  device                Device?       @relation(fields: [deviceId], references: [id])
+  deviceId              String?
+  pond                  Pond?         @relation(fields: [pondId], references: [id])
+  pondId                String?
+
+  @@map("metrictemp")
 }
