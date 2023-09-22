@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   Patch,
   Post,
@@ -26,5 +27,15 @@ export class AdminMastersController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateMasterDto: UpdateMasterDto) {
     return this.mastersService.update(id, updateMasterDto);
+  }
+
+  @Get()
+  findAll() {
+    return this.mastersService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.mastersService.findOne(id);
   }
 }
