@@ -39,7 +39,7 @@ export class ArticlesService {
   }
 
   async update(id: string, updateArticleDto: UpdateArticleDto) {
-    const { title, url, image } = updateArticleDto;
+    const { title, url, image, published } = updateArticleDto;
     const isExist = this.isArticleExist(id);
 
     if (!isExist) {
@@ -52,6 +52,7 @@ export class ArticlesService {
         title,
         url,
         image,
+        published,
       },
     });
   }
