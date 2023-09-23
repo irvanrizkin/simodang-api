@@ -6,6 +6,7 @@ import { MetricQueryDto } from './dto/metric-query.dto';
 import { DevicesService } from 'src/devices/devices.service';
 import { Prisma } from '@prisma/client';
 import { SocketGateway } from 'src/socket/socket.gateway';
+import { sub } from 'date-fns';
 
 @Injectable()
 export class MetricsService {
@@ -94,7 +95,10 @@ export class MetricsService {
     });
   }
 
-  async findMetricsByRangeDate(pondId: string, metricQueryDto: MetricQueryDto) {
+  async findAggregatedMetricsByRangeDate(
+    pondId: string,
+    metricQueryDto: MetricQueryDto,
+  ) {
     const { startDate, endDate, take, page } = metricQueryDto;
     const skip = take * (page - 1);
 
@@ -118,6 +122,40 @@ export class MetricsService {
     ORDER BY DATE(createdAt)
     ${take ? limit : Prisma.empty};
     `;
+  }
+
+  async findAllMetricsByHour(pondId: string, metricQueryDto: MetricQueryDto) {
+    const { timeString, hours, take, page } = metricQueryDto;
+    const date = new Date(timeString);
+
+    if (take) {
+      const skip = take * (page - 1);
+      return await this.prisma.metric.findMany({
+        where: {
+          pondId,
+          createdAt: {
+            gte: sub(date, { hours }),
+          },
+        },
+        orderBy: {
+          createdAt: 'asc',
+        },
+        take: Number(take),
+        skip: Number(skip),
+      });
+    }
+
+    return await this.prisma.metric.findMany({
+      where: {
+        pondId,
+        createdAt: {
+          gte: sub(date, { hours }),
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
   }
 
   async findLastMetric(pondId: string) {

@@ -12,12 +12,19 @@ export class MetricsController {
     return this.metricsService.create(createMetricDto);
   }
 
-  @Get('/aggregated/:id')
+  @Get('/:id')
   findMetricsByRangeDate(
     @Param('id') id: string,
     @Query() metricsQueryDto: MetricQueryDto,
   ) {
-    return this.metricsService.findMetricsByRangeDate(id, metricsQueryDto);
+    const { avg } = metricsQueryDto;
+    if (avg == 1) {
+      return this.metricsService.findAggregatedMetricsByRangeDate(
+        id,
+        metricsQueryDto,
+      );
+    }
+    return this.metricsService.findAllMetricsByHour(id, metricsQueryDto);
   }
 
   @Get('/last/:id')
