@@ -113,7 +113,7 @@ export class PondsService {
       throw new NotFoundException('no device attached in this pond');
     }
 
-    return await this.prisma.pond.update({
+    const pondDevice = await this.prisma.pond.update({
       where: { id },
       data: {
         device: {
@@ -139,5 +139,23 @@ export class PondsService {
         device: true,
       },
     });
+
+    await this.prisma.pond.update({
+      where: { id },
+      data: {
+        device: {
+          update: {
+            data: {
+              isChanged: 1,
+            },
+          },
+        },
+      },
+      include: {
+        device: true,
+      },
+    });
+
+    return pondDevice;
   }
 }

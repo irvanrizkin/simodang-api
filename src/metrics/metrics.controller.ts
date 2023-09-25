@@ -2,14 +2,29 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { MetricsService } from './metrics.service';
 import { CreateMetricDto } from './dto/create-metric.dto';
 import { MetricQueryDto } from './dto/metric-query.dto';
+import { DevicesService } from 'src/devices/devices.service';
 
 @Controller('metrics')
 export class MetricsController {
-  constructor(private readonly metricsService: MetricsService) {}
+  constructor(
+    private readonly metricsService: MetricsService,
+    private readonly devicesService: DevicesService,
+  ) {}
 
   @Post()
   create(@Body() createMetricDto: CreateMetricDto) {
-    return this.metricsService.create(createMetricDto);
+    let onError = false;
+    this.metricsService.create(createMetricDto);
+    try {
+      this.devicesService.changePondStatusByThreshold(createMetricDto);
+    } catch (error) {
+      onError = true;
+    }
+
+    if (onError) {
+      return { message: 'metric created, change pond status failed, error' };
+    }
+    return { message: 'metric created, change pond status success' };
   }
 
   @Get('/:id')

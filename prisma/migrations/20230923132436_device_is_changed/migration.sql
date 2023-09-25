@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `device` ADD COLUMN `isChanged` INTEGER NOT NULL DEFAULT 0;
