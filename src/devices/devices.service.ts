@@ -140,7 +140,7 @@ export class DevicesService {
       throw new NotFoundException('device not found');
     }
 
-    const { pond } = device;
+    const { pond, notificationCount } = device;
     if (!pond) {
       throw new NotFoundException('no pond related to this device');
     }
@@ -156,14 +156,24 @@ export class DevicesService {
     const { id, name, userId } = pond;
 
     if (isInThreshold) {
+      await this.prisma.device.update({
+        where: { id: deviceId },
+        data: { notificationCount: 0 },
+      });
       return await this.prisma.pond.update({
         where: { id },
         data: { status: 1 },
       });
     }
-    await this.notificationsService.create(userId, {
-      title: `Kolam ${name} berada dalam kondisi tidak baik`,
-      message: 'Periksa kondisi tambak milik anda',
+    if (notificationCount === 0) {
+      await this.notificationsService.create(userId, {
+        title: `Kolam ${name} berada dalam kondisi tidak baik`,
+        message: 'Periksa kondisi tambak milik anda',
+      });
+    }
+    await this.prisma.device.update({
+      where: { id: deviceId },
+      data: { notificationCount: { increment: 1 } },
     });
     return await this.prisma.pond.update({
       where: { id },
