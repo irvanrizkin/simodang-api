@@ -113,7 +113,7 @@ export class MetricsService {
       AVG(tds) AS tds,
       AVG(turbidity) AS turbidity
     FROM
-      Metric
+      metric
     WHERE
       pondId = ${pondId} AND
       createdAt BETWEEN ${startDate} AND ${endDate + ' 23:59:59'}
