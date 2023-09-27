@@ -12,18 +12,10 @@ export class MetricsController {
   ) {}
 
   @Post()
-  create(@Body() createMetricDto: CreateMetricDto) {
-    let onError = false;
-    this.metricsService.create(createMetricDto);
-    try {
-      this.devicesService.changePondStatusByThreshold(createMetricDto);
-    } catch (error) {
-      onError = true;
-    }
+  async create(@Body() createMetricDto: CreateMetricDto) {
+    await this.metricsService.create(createMetricDto);
+    await this.devicesService.changePondStatusByThreshold(createMetricDto);
 
-    if (onError) {
-      return { message: 'metric created, change pond status failed, error' };
-    }
     return { message: 'metric created, change pond status success' };
   }
 
