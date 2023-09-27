@@ -38,4 +38,12 @@ export class MetricsController {
   findLastMetric(@Param('id') id: string) {
     return this.metricsService.findLastMetric(id);
   }
+
+  @Get('/device/:id')
+  findDeviceMetricByHour(
+    @Param('id') id: string,
+    @Query() metricsQueryDto: MetricQueryDto,
+  ) {
+    return this.metricsService.findDeviceMetricByHour(id, metricsQueryDto);
+  }
 }

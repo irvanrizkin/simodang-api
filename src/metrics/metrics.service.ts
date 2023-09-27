@@ -158,6 +158,26 @@ export class MetricsService {
     });
   }
 
+  async findDeviceMetricByHour(
+    deviceId: string,
+    metricQueryDto: MetricQueryDto,
+  ) {
+    const { timeString, hours } = metricQueryDto;
+    const date = new Date(timeString);
+
+    return await this.prisma.metric.findMany({
+      where: {
+        deviceId,
+        createdAt: {
+          gte: sub(date, { hours }),
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+  }
+
   async findLastMetric(pondId: string) {
     const latestMetric = await this.prisma.metric.findFirst({
       where: { pondId },
