@@ -87,6 +87,7 @@ export class PondsService {
   ) {
     const {
       notificationEnabled,
+      autoWaterEnabled,
       isSaved,
       tempLow,
       tempHigh,
@@ -120,6 +121,7 @@ export class PondsService {
           update: {
             data: {
               notificationEnabled,
+              autoWaterEnabled,
               isSaved,
               tempLow,
               tempHigh,

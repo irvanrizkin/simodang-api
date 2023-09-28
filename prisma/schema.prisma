@@ -71,6 +71,7 @@ model Device {
   notificationCount     Int           @default(0)
   isSaved               Int           @default(0)
   isChanged             Int           @default(0)
+  autoWaterEnabled      Int           @default(0)
   tempLow               Decimal       @default(0)   @db.Decimal(10,1)
   tempHigh              Decimal       @default(0)   @db.Decimal(10,1)
   phLow                 Decimal       @default(0)   @db.Decimal(10,1)
