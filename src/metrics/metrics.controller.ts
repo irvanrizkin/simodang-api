@@ -13,10 +13,10 @@ export class MetricsController {
 
   @Post()
   async create(@Body() createMetricDto: CreateMetricDto) {
-    await this.metricsService.create(createMetricDto);
+    const metric = await this.metricsService.create(createMetricDto);
     await this.devicesService.changePondStatusByThreshold(createMetricDto);
 
-    return { message: 'metric created, change pond status success' };
+    return metric;
   }
 
   @Get('/:id')
