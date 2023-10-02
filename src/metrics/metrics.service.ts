@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotFoundException,
+  Injectable,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMetricDto } from './dto/create-metric.dto';
 import { randomBytes } from 'crypto';
@@ -34,6 +38,9 @@ export class MetricsService {
     let pondId: string | null = null;
 
     const device = await this.devicesService.findOne(deviceId ?? '');
+    if (!device) {
+      throw new NotFoundException('device not found when create metric');
+    }
     if (device && device.masterId != masterId) {
       throw new BadRequestException('master id not match');
     }
