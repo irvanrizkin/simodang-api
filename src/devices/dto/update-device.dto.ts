@@ -4,6 +4,7 @@ import { CreateDeviceDto } from './create-device.dto';
 export class UpdateDeviceDto extends PartialType(CreateDeviceDto) {
   notificationEnabled?: number;
   autoWaterEnabled?: number;
+  autoFeedEnabled?: number;
   isSaved?: number;
   tempLow?: number;
   tempHigh?: number;

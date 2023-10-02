@@ -5,6 +5,7 @@ export class UpdatePondDto extends PartialType(CreatePondDto) {
   seedDate?: string;
   notificationEnabled?: number;
   autoWaterEnabled?: number;
+  autoFeedEnabled?: number;
   isSaved?: number;
   tempLow?: number;
   tempHigh?: number;
