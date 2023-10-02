@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMetricDto } from './dto/create-metric.dto';
 import { randomBytes } from 'crypto';
@@ -19,6 +19,7 @@ export class MetricsService {
   async create(createMetricDto: CreateMetricDto) {
     const {
       device_id: deviceId,
+      master_id: masterId,
       temper_val: temperature,
       ph_val: ph,
       oxygen_val: tdo,
@@ -33,6 +34,10 @@ export class MetricsService {
     let pondId: string | null = null;
 
     const device = await this.devicesService.findOne(deviceId ?? '');
+    if (device && device.masterId != masterId) {
+      throw new BadRequestException('master id not match');
+    }
+
     if (device && device.pond) {
       pondId = device.pond.id;
 
