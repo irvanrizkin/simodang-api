@@ -17,11 +17,4 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          script: |
-            cd ~/node/simodang-api
-            git pull origin main
-            yarn install
-            yarn prisma migrate deploy
-            yarn prisma generate
-            yarn build
-            pm2 reload simodang-api
+          script: ls -la
