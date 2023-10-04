@@ -2,21 +2,14 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { MetricsService } from './metrics.service';
 import { CreateMetricDto } from './dto/create-metric.dto';
 import { MetricQueryDto } from './dto/metric-query.dto';
-import { DevicesService } from 'src/devices/devices.service';
 
 @Controller('metrics')
 export class MetricsController {
-  constructor(
-    private readonly metricsService: MetricsService,
-    private readonly devicesService: DevicesService,
-  ) {}
+  constructor(private readonly metricsService: MetricsService) {}
 
   @Post()
   async create(@Body() createMetricDto: CreateMetricDto) {
-    const metric = await this.metricsService.create(createMetricDto);
-    await this.devicesService.changePondStatusByThreshold(createMetricDto);
-
-    return metric;
+    return this.metricsService.create(createMetricDto);
   }
 
   @Get('/:id')

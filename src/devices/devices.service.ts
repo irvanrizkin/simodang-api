@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -6,7 +6,8 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { Device } from '@prisma/client';
 import { MetricParamDto } from './dto/metric-param.dto';
 import { NotificationsService } from 'src/notifications/notifications.service';
-import { CreateMetricDto } from 'src/metrics/dto/create-metric.dto';
+import { OnEvent } from '@nestjs/event-emitter';
+import { ThresholdCheckEvent } from './events/threshold-check.event';
 
 @Injectable()
 export class DevicesService {
@@ -94,7 +95,13 @@ export class DevicesService {
     return value >= low.toNumber() && value <= high.toNumber();
   }
 
-  isInThreshold(device: Device, metricParamDto: MetricParamDto) {
+  private isInThreshold(
+    device: Device,
+    metricParamDto: MetricParamDto,
+  ): {
+    status: boolean;
+    outOfRange: string[];
+  } {
     const {
       tempLow,
       tempHigh,
@@ -107,6 +114,7 @@ export class DevicesService {
       turbiditiesLow,
       turbiditiesHigh,
     } = device;
+    const outOfRange = [];
 
     const { temperature, ph, tdo, tds, turbidities } = metricParamDto;
 
@@ -119,47 +127,40 @@ export class DevicesService {
       turbiditiesHigh,
       turbiditiesLow,
     );
+    !isTempInRange && outOfRange.push('temperature');
+    !isPhInRange && outOfRange.push('ph');
+    !isTdoInRange && outOfRange.push('tdo');
+    !isTdsInRange && outOfRange.push('tds');
+    !isTurbiditiesInRange && outOfRange.push('turbidities');
 
-    return (
-      isTempInRange &&
-      isPhInRange &&
-      isTdoInRange &&
-      isTdsInRange &&
-      isTurbiditiesInRange
-    );
+    return {
+      status:
+        isTempInRange &&
+        isPhInRange &&
+        isTdoInRange &&
+        isTdsInRange &&
+        isTurbiditiesInRange,
+      outOfRange,
+    };
   }
 
-  async changePondStatusByThreshold(createMetricDto: CreateMetricDto) {
-    const {
-      device_id: deviceId,
-      temper_val: temperature,
-      ph_val: ph,
-      oxygen_val: tdo,
-      tds_val: tds,
-      turbidities_val: turbidities,
-    } = createMetricDto;
-    const device = await this.findOne(deviceId);
+  @OnEvent('device.threshold', { async: true })
+  async changePondStatusByEvent(thresholdCheckEvent: ThresholdCheckEvent) {
+    const { deviceId } = thresholdCheckEvent;
 
-    if (!device) {
-      throw new NotFoundException('device not found');
-    }
-
-    const { pond, notificationCount } = device;
-    if (!pond) {
-      throw new NotFoundException('no pond related to this device');
-    }
-
-    const isInThreshold = this.isInThreshold(device, {
-      temperature,
-      ph,
-      tdo,
-      tds,
-      turbidities,
+    const device = await this.prisma.device.findUnique({
+      where: { id: deviceId },
+      include: { pond: true },
     });
 
+    const { pond, notificationCount } = device;
     const { id, name, userId } = pond;
 
-    if (isInThreshold) {
+    const { status, outOfRange } = this.isInThreshold(
+      device,
+      thresholdCheckEvent,
+    );
+    if (status) {
       await this.prisma.device.update({
         where: { id: deviceId },
         data: { notificationCount: 0 },
@@ -169,10 +170,11 @@ export class DevicesService {
         data: { status: 1 },
       });
     }
+    // ensure the notification only sent once before the count resets to 0
     if (notificationCount === 0) {
       await this.notificationsService.create(userId, {
         title: `Kolam ${name} berada dalam kondisi tidak baik`,
-        message: 'Periksa kondisi tambak milik anda',
+        message: `Parameter yang terdampak ${outOfRange.toString()}`,
       });
     }
     await this.prisma.device.update({
