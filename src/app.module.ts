@@ -11,6 +11,7 @@ import { PondsModule } from './ponds/ponds.module';
 import { UsersModule } from './users/users.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { LogModule } from './log/log.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     PondsModule,
     UsersModule,
     MetricsModule,
+    LogModule,
   ],
   controllers: [AppController],
   providers: [AppService],
