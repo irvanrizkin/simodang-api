@@ -8,6 +8,7 @@ import { MetricParamDto } from './dto/metric-param.dto';
 import { NotificationsService } from 'src/notifications/notifications.service';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ThresholdCheckEvent } from './events/threshold-check.event';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class DevicesService {
@@ -175,6 +176,12 @@ export class DevicesService {
       await this.notificationsService.create(userId, {
         title: `Kolam ${name} berada dalam kondisi tidak baik`,
         message: `Parameter yang terdampak ${outOfRange.toString()}`,
+      });
+      await admin.messaging().sendToTopic(id, {
+        notification: {
+          title: `Kolam ${name} berada dalam kondisi tidak baik`,
+          body: `Parameter yang terdampak ${outOfRange.toString()}`,
+        },
       });
     }
     await this.prisma.device.update({
