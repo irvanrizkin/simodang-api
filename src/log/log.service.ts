@@ -17,4 +17,10 @@ export class LogService {
       },
     });
   }
+
+  async findAll() {
+    return await this.prisma.log.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 }
