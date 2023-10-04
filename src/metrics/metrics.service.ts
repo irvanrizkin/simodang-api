@@ -11,6 +11,8 @@ import { DevicesService } from 'src/devices/devices.service';
 import { Prisma } from '@prisma/client';
 import { SocketGateway } from 'src/socket/socket.gateway';
 import { sub } from 'date-fns';
+import { ThresholdCheckEvent } from 'src/devices/events/threshold-check.event';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class MetricsService {
@@ -18,6 +20,7 @@ export class MetricsService {
     private prisma: PrismaService,
     private devicesService: DevicesService,
     private socketGateway: SocketGateway,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async create(createMetricDto: CreateMetricDto) {
@@ -47,6 +50,16 @@ export class MetricsService {
 
     if (device && device.pond) {
       pondId = device.pond.id;
+
+      const thresholdCheckEvent = new ThresholdCheckEvent(
+        deviceId,
+        temperature,
+        ph,
+        tdo,
+        tds,
+        turbidity,
+      );
+      this.eventEmitter.emit('device.threshold', thresholdCheckEvent);
 
       this.socketGateway.sendMessage(pondId, {
         deviceId,

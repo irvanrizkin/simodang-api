@@ -11,10 +11,12 @@ import { PondsModule } from './ponds/ponds.module';
 import { UsersModule } from './users/users.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { SocketModule } from './socket/socket.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    EventEmitterModule.forRoot(),
     AuthModule,
     ArticlesModule,
     NotificationsModule,
