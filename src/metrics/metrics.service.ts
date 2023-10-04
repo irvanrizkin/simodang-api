@@ -9,17 +9,16 @@ import { randomBytes } from 'crypto';
 import { MetricQueryDto } from './dto/metric-query.dto';
 import { DevicesService } from 'src/devices/devices.service';
 import { Prisma } from '@prisma/client';
-import { SocketGateway } from 'src/socket/socket.gateway';
 import { sub } from 'date-fns';
 import { ThresholdCheckEvent } from 'src/devices/events/threshold-check.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class MetricsService {
   constructor(
     private prisma: PrismaService,
     private devicesService: DevicesService,
-    private socketGateway: SocketGateway,
     private eventEmitter: EventEmitter2,
   ) {}
 
@@ -61,16 +60,22 @@ export class MetricsService {
       );
       this.eventEmitter.emit('device.threshold', thresholdCheckEvent);
 
-      this.socketGateway.sendMessage(pondId, {
-        deviceId,
-        pondId,
-        temperature,
-        ph,
-        tdo,
-        tds,
-        turbidity,
-        createdAt,
-      });
+      await admin.messaging().sendToTopic(
+        `${pondId}-realtime`,
+        {
+          data: {
+            temperature: temperature.toString(),
+            ph: ph.toString(),
+            tdo: tdo.toString(),
+            tds: tds.toString(),
+            turbidity: turbidity.toString(),
+          },
+        },
+        {
+          contentAvailable: true,
+          priority: 'high',
+        },
+      );
     }
 
     if (device && device.isSaved === 1) {

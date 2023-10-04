@@ -10,7 +10,6 @@ import { DevicesModule } from './devices/devices.module';
 import { PondsModule } from './ponds/ponds.module';
 import { UsersModule } from './users/users.module';
 import { MetricsModule } from './metrics/metrics.module';
-import { SocketModule } from './socket/socket.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
@@ -25,7 +24,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     PondsModule,
     UsersModule,
     MetricsModule,
-    SocketModule,
   ],
   controllers: [AppController],
   providers: [AppService],
