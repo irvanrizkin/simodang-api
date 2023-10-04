@@ -146,3 +146,12 @@ model MetricTemp {
 
   @@map("metrictemp")
 }
+
+model Log {
+  id                    String        @id
+  scope                 String        @default("")
+  summary               String        @default("")
+  createdAt             DateTime      @default(now())
+
+  @@map("log")
+}
