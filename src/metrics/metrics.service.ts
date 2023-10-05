@@ -14,6 +14,7 @@ import { ThresholdCheckEvent } from 'src/devices/events/threshold-check.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as admin from 'firebase-admin';
 import { LogService } from 'src/log/log.service';
+import { zonedTimeToUtc } from 'date-fns-tz';
 
 @Injectable()
 export class MetricsService {
@@ -23,6 +24,13 @@ export class MetricsService {
     private eventEmitter: EventEmitter2,
     private logService: LogService,
   ) {}
+
+  private toUtc(dateString: string) {
+    if (dateString) {
+      return zonedTimeToUtc(new Date(dateString), 'Asia/Bangkok');
+    }
+    return new Date();
+  }
 
   async create(createMetricDto: CreateMetricDto) {
     const {
@@ -39,7 +47,10 @@ export class MetricsService {
     const id = `MET${randomBytes(5).toString('hex')}`;
     const tempId = `TMP${randomBytes(5).toString('hex')}`;
 
-    const dateCreate = createdAt ? new Date(createdAt) : new Date();
+    const dateCreate = this.toUtc(createdAt);
+    if (dateCreate.toString() === 'Invalid Date') {
+      throw new BadRequestException('invalid date format');
+    }
 
     let pondId: string | null = null;
 
