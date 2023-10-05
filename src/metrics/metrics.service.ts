@@ -39,6 +39,8 @@ export class MetricsService {
     const id = `MET${randomBytes(5).toString('hex')}`;
     const tempId = `TMP${randomBytes(5).toString('hex')}`;
 
+    const dateCreate = createdAt ? new Date(createdAt) : new Date();
+
     let pondId: string | null = null;
 
     const device = await this.devicesService.findOne(deviceId ?? '');
@@ -93,7 +95,7 @@ export class MetricsService {
           tdo,
           tds,
           turbidity,
-          createdAt,
+          createdAt: dateCreate,
         },
       });
     }
@@ -109,7 +111,7 @@ export class MetricsService {
           tdo,
           tds,
           turbidity,
-          createdAt,
+          createdAt: dateCreate,
         },
       });
     }
@@ -124,7 +126,7 @@ export class MetricsService {
         tdo,
         tds,
         turbidity,
-        createdAt,
+        createdAt: dateCreate,
       },
     });
   }
