@@ -5,11 +5,11 @@ import { TokenGuard } from 'src/guard/token.guard';
 import { AdminGuard } from 'src/guard/admin.guard';
 
 @Controller('admin/metrics')
+@UseGuards(TokenGuard, AdminGuard)
 export class AdminMetricsController {
   constructor(private readonly metricsService: MetricsService) {}
 
   @Get('/device/:id')
-  @UseGuards(TokenGuard, AdminGuard)
   findDeviceMetricByHour(
     @Param('id') id: string,
     @Query() metricsQueryDto: MetricQueryDto,
