@@ -14,7 +14,7 @@ import { ThresholdCheckEvent } from 'src/devices/events/threshold-check.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as admin from 'firebase-admin';
 import { LogService } from 'src/log/log.service';
-import { zonedTimeToUtc } from 'date-fns-tz';
+import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 
 @Injectable()
 export class MetricsService {
@@ -51,6 +51,10 @@ export class MetricsService {
     if (dateCreate.toString() === 'Invalid Date') {
       throw new BadRequestException('invalid date format');
     }
+    const createdAtWib = utcToZonedTime(
+      dateCreate,
+      'Asia/Jakarta',
+    ).toLocaleString();
 
     let pondId: string | null = null;
 
@@ -107,6 +111,7 @@ export class MetricsService {
           tds,
           turbidity,
           createdAt: dateCreate,
+          createdAtWib,
         },
       });
     }
@@ -123,6 +128,7 @@ export class MetricsService {
           tds,
           turbidity,
           createdAt: dateCreate,
+          createdAtWib,
         },
       });
     }
