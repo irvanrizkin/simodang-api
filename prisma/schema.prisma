@@ -123,6 +123,7 @@ model Metric {
   tds                   Decimal       @default(0)       @db.Decimal(10,1)
   turbidity             Decimal       @default(0)       @db.Decimal(10,1)
   createdAt             DateTime      @default(now())
+  createdAtWib          String        @default("")
   device                Device?       @relation(fields: [deviceId], references: [id])
   deviceId              String?
   pond                  Pond?         @relation(fields: [pondId], references: [id])
@@ -139,6 +140,7 @@ model MetricTemp {
   tds                   Decimal       @default(0)       @db.Decimal(10,1)
   turbidity             Decimal       @default(0)       @db.Decimal(10,1)
   createdAt             DateTime      @default(now())
+  createdAtWib          String        @default("")
   device                Device?       @relation(fields: [deviceId], references: [id])
   deviceId              String?
   pond                  Pond?         @relation(fields: [pondId], references: [id])
