@@ -24,6 +24,7 @@ export class NotificationsService {
   async findAllByToken(userId: string) {
     return await this.prisma.notification.findMany({
       where: { userId, deleted: 0 },
+      orderBy: { createdAt: 'desc' },
     });
   }
 
