@@ -223,6 +223,7 @@ export class MetricsService {
         deviceId,
         createdAt: {
           gte: sub(date, { hours }),
+          lte: date,
         },
       },
       orderBy: {
