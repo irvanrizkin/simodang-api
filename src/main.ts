@@ -27,6 +27,21 @@ async function bootstrap() {
     .setTitle('Simodang API')
     .setDescription('The Simodang API description')
     .setVersion('1.0')
+    .addBearerAuth()
+    .addTag('articles')
+    .addTag('admin/articles')
+    .addTag('auth')
+    .addTag('devices')
+    .addTag('admin/devices')
+    .addTag('admin/log')
+    .addTag('masters')
+    .addTag('admin/masters')
+    .addTag('metrics')
+    .addTag('admin/metrics')
+    .addTag('notifications')
+    .addTag('ponds')
+    .addTag('users')
+    .addTag('admin/users')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
