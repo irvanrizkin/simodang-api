@@ -188,6 +188,7 @@ export class MetricsService {
           pondId,
           createdAt: {
             gte: sub(date, { hours }),
+            lte: date,
           },
         },
         orderBy: {
@@ -203,6 +204,7 @@ export class MetricsService {
         pondId,
         createdAt: {
           gte: sub(date, { hours }),
+          lte: date,
         },
       },
       orderBy: {
