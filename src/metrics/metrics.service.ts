@@ -15,6 +15,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as admin from 'firebase-admin';
 import { LogService } from 'src/log/log.service';
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
+import { MetricAvgQueryDto } from './dto/metric-avg-query.dto';
 
 @Injectable()
 export class MetricsService {
@@ -148,11 +149,11 @@ export class MetricsService {
     });
   }
 
-  async findAggregatedMetricsByRangeDate(
+  async findAveragedMetricsByRangeDate(
     pondId: string,
-    metricQueryDto: MetricQueryDto,
+    metricAvgQueryDto: MetricAvgQueryDto,
   ) {
-    const { startDate, endDate, take, page } = metricQueryDto;
+    const { startDate, endDate, take, page } = metricAvgQueryDto;
     const skip = take * (page - 1);
 
     const limit = Prisma.sql`LIMIT ${take} OFFSET ${skip}`;
