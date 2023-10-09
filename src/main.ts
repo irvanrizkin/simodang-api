@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { ServiceAccount } from 'firebase-admin';
 import * as admin from 'firebase-admin';
 import { PrismaErrorHandlerFilter } from './filter/prisma.error.handler.filter';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,6 +22,14 @@ async function bootstrap() {
   });
 
   app.enableCors();
+
+  const config = new DocumentBuilder()
+    .setTitle('Simodang API')
+    .setDescription('The Simodang API description')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaErrorHandlerFilter(httpAdapter));
