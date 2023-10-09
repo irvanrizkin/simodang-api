@@ -1,13 +1,16 @@
 import { Controller, Get, Delete, UseGuards, Request } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { TokenGuard } from 'src/guard/token.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('notifications')
+@UseGuards(TokenGuard)
+@ApiTags('notifications')
+@ApiBearerAuth()
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 
   @Get()
-  @UseGuards(TokenGuard)
   async findAllByToken(@Request() req) {
     const { id: userId } = req.user;
 
@@ -15,7 +18,6 @@ export class NotificationsController {
   }
 
   @Delete()
-  @UseGuards(TokenGuard)
   async deleteAllByToken(@Request() req) {
     const { id: userId } = req.user;
 

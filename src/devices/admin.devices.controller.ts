@@ -12,9 +12,12 @@ import { TokenGuard } from 'src/guard/token.guard';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('admin/devices')
 @UseGuards(TokenGuard, AdminGuard)
+@ApiTags('admin/devices')
+@ApiBearerAuth()
 export class AdminDevicesController {
   constructor(private readonly devicesService: DevicesService) {}
 

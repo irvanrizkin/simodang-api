@@ -12,13 +12,16 @@ import { PondsService } from './ponds.service';
 import { CreatePondDto } from './dto/create-pond.dto';
 import { UpdatePondDto } from './dto/update-pond.dto';
 import { TokenGuard } from 'src/guard/token.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('ponds')
+@ApiTags('ponds')
 export class PondsController {
   constructor(private readonly pondsService: PondsService) {}
 
   @Post()
   @UseGuards(TokenGuard)
+  @ApiBearerAuth()
   create(@Request() req, @Body() createPondDto: CreatePondDto) {
     const { id: userId } = req.user;
 
@@ -27,6 +30,7 @@ export class PondsController {
 
   @Get()
   @UseGuards(TokenGuard)
+  @ApiBearerAuth()
   findAllByUser(@Request() req) {
     const { id } = req.user;
 
@@ -40,6 +44,7 @@ export class PondsController {
 
   @Patch(':id')
   @UseGuards(TokenGuard)
+  @ApiBearerAuth()
   update(
     @Request() req,
     @Param('id') id: string,
@@ -52,6 +57,7 @@ export class PondsController {
 
   @Patch(':id/device')
   @UseGuards(TokenGuard)
+  @ApiBearerAuth()
   updateDeviceProperties(
     @Request() req,
     @Param('id') id: string,

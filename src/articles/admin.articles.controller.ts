@@ -12,9 +12,12 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 import { TokenGuard } from 'src/guard/token.guard';
 import { AdminGuard } from 'src/guard/admin.guard';
 import { ArticlesService } from './articles.service';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('admin/articles')
 @UseGuards(TokenGuard, AdminGuard)
+@ApiTags('admin/articles')
+@ApiBearerAuth()
 export class AdminArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 

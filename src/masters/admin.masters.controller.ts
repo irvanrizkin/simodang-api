@@ -12,14 +12,16 @@ import { TokenGuard } from 'src/guard/token.guard';
 import { MastersService } from './masters.service';
 import { CreateMasterDto } from './dto/create-master.dto';
 import { UpdateMasterDto } from './dto/update-master.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('admin/masters')
 @UseGuards(TokenGuard, AdminGuard)
+@ApiTags('admin/masters')
+@ApiBearerAuth()
 export class AdminMastersController {
   constructor(private readonly mastersService: MastersService) {}
 
   @Post()
-  @UseGuards(TokenGuard, AdminGuard)
   create(@Body() createMasterDto: CreateMasterDto) {
     return this.mastersService.create(createMasterDto);
   }
