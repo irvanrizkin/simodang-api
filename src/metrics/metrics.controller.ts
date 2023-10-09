@@ -3,6 +3,7 @@ import { MetricsService } from './metrics.service';
 import { CreateMetricDto } from './dto/create-metric.dto';
 import { MetricQueryDto } from './dto/metric-query.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { MetricAvgQueryDto } from './dto/metric-avg-query.dto';
 
 @Controller('metrics')
 @ApiTags('metrics')
@@ -15,18 +16,22 @@ export class MetricsController {
   }
 
   @Get('/:id')
-  findMetricsByRangeDate(
+  findAllMetricsByHour(
     @Param('id') id: string,
     @Query() metricsQueryDto: MetricQueryDto,
   ) {
-    const { avg } = metricsQueryDto;
-    if (avg == 1) {
-      return this.metricsService.findAggregatedMetricsByRangeDate(
-        id,
-        metricsQueryDto,
-      );
-    }
     return this.metricsService.findAllMetricsByHour(id, metricsQueryDto);
+  }
+
+  @Get('/avg/:id')
+  findAveragedMetricsByRangeDate(
+    @Param('id') id: string,
+    @Query() metricAvgQueryDto: MetricAvgQueryDto,
+  ) {
+    return this.metricsService.findAveragedMetricsByRangeDate(
+      id,
+      metricAvgQueryDto,
+    );
   }
 
   @Get('/last/:id')
