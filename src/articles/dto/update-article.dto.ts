@@ -1,6 +1,7 @@
-import { PartialType } from '@nestjs/mapped-types';
 import { CreateArticleDto } from './create-article.dto';
+import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 
 export class UpdateArticleDto extends PartialType(CreateArticleDto) {
-  published: number;
+  @ApiPropertyOptional()
+  published?: number;
 }
