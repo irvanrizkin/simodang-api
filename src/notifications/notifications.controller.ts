@@ -1,4 +1,12 @@
-import { Controller, Get, Delete, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Delete,
+  UseGuards,
+  Request,
+  Patch,
+  Param,
+} from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { TokenGuard } from 'src/guard/token.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -26,5 +34,12 @@ export class NotificationsController {
     return {
       message: 'all notifications from this user was deleted successfully',
     };
+  }
+
+  @Patch('/:id')
+  async updateIsRead(@Param('id') id: string, @Request() req) {
+    const { id: userId } = req.user;
+
+    return this.notificationsService.updateIsRead(id, userId);
   }
 }
