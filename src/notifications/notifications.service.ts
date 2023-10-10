@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { randomBytes } from 'crypto';
@@ -32,6 +36,25 @@ export class NotificationsService {
     await this.prisma.notification.updateMany({
       where: { userId },
       data: { deleted: 1 },
+    });
+  }
+
+  async updateIsRead(id: string, userId: string) {
+    const notification = await this.prisma.notification.findUnique({
+      where: { id },
+    });
+
+    if (!notification) {
+      throw new NotFoundException('notification not found');
+    }
+
+    if (notification.userId !== userId) {
+      throw new ForbiddenException('this notification not yours');
+    }
+
+    return await this.prisma.notification.update({
+      where: { id },
+      data: { isRead: true },
     });
   }
 }
