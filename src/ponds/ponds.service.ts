@@ -7,6 +7,7 @@ import { CreatePondDto } from './dto/create-pond.dto';
 import { UpdatePondDto } from './dto/update-pond.dto';
 import { randomBytes } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdatePondPropDto } from './dto/update-pond-prop.dto';
 
 @Injectable()
 export class PondsService {
@@ -82,7 +83,7 @@ export class PondsService {
 
   async updateDeviceProperties(
     id: string,
-    updatePondDto: UpdatePondDto,
+    updatePondPropDto: UpdatePondPropDto,
     userId: string,
   ) {
     const {
@@ -100,7 +101,7 @@ export class PondsService {
       tdsHigh,
       turbiditiesLow,
       turbiditiesHigh,
-    } = updatePondDto;
+    } = updatePondPropDto;
     const pond = await this.findOne(id);
 
     if (!pond) {

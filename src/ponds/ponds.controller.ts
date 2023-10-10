@@ -12,7 +12,14 @@ import { PondsService } from './ponds.service';
 import { CreatePondDto } from './dto/create-pond.dto';
 import { UpdatePondDto } from './dto/update-pond.dto';
 import { TokenGuard } from 'src/guard/token.guard';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
+import { UpdatePondPropDto } from './dto/update-pond-prop.dto';
 
 @Controller('ponds')
 @ApiTags('ponds')
@@ -22,6 +29,26 @@ export class PondsController {
   @Post()
   @UseGuards(TokenGuard)
   @ApiBearerAuth()
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    content: {
+      'application/json': {
+        examples: {
+          noToken: { value: GuardErrorExample.noToken },
+        },
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+    content: {
+      'application/json': {
+        examples: {
+          tokenMismatch: { value: GuardErrorExample.tokenMismatch },
+        },
+      },
+    },
+  })
   create(@Request() req, @Body() createPondDto: CreatePondDto) {
     const { id: userId } = req.user;
 
@@ -31,6 +58,26 @@ export class PondsController {
   @Get()
   @UseGuards(TokenGuard)
   @ApiBearerAuth()
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    content: {
+      'application/json': {
+        examples: {
+          noToken: { value: GuardErrorExample.noToken },
+        },
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+    content: {
+      'application/json': {
+        examples: {
+          tokenMismatch: { value: GuardErrorExample.tokenMismatch },
+        },
+      },
+    },
+  })
   findAllByUser(@Request() req) {
     const { id } = req.user;
 
@@ -45,6 +92,26 @@ export class PondsController {
   @Patch(':id')
   @UseGuards(TokenGuard)
   @ApiBearerAuth()
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    content: {
+      'application/json': {
+        examples: {
+          noToken: { value: GuardErrorExample.noToken },
+        },
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+    content: {
+      'application/json': {
+        examples: {
+          tokenMismatch: { value: GuardErrorExample.tokenMismatch },
+        },
+      },
+    },
+  })
   update(
     @Request() req,
     @Param('id') id: string,
@@ -58,13 +125,37 @@ export class PondsController {
   @Patch(':id/device')
   @UseGuards(TokenGuard)
   @ApiBearerAuth()
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    content: {
+      'application/json': {
+        examples: {
+          noToken: { value: GuardErrorExample.noToken },
+        },
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+    content: {
+      'application/json': {
+        examples: {
+          tokenMismatch: { value: GuardErrorExample.tokenMismatch },
+        },
+      },
+    },
+  })
   updateDeviceProperties(
     @Request() req,
     @Param('id') id: string,
-    @Body() updatePondDto: UpdatePondDto,
+    @Body() updatePondPropDto: UpdatePondPropDto,
   ) {
     const { id: userId } = req.user;
 
-    return this.pondsService.updateDeviceProperties(id, updatePondDto, userId);
+    return this.pondsService.updateDeviceProperties(
+      id,
+      updatePondPropDto,
+      userId,
+    );
   }
 }
