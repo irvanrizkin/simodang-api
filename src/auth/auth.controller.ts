@@ -18,10 +18,6 @@ export class AuthController {
 
   @Post(':uid')
   async loginFirebase(@Param('uid') uid: string) {
-    try {
-      return this.authService.loginFirebase(uid);
-    } catch (error) {
-      console.log(error);
-    }
+    return await this.authService.loginFirebase(uid);
   }
 }
