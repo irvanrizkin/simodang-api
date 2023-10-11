@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -67,6 +67,11 @@ export class DevicesService {
       turbiditiesLow,
       turbiditiesHigh,
     } = updateDeviceDto;
+    const isExist = await this.isDeviceExist(id);
+
+    if (!isExist) {
+      throw new NotFoundException('device not found');
+    }
 
     return await this.prisma.device.update({
       where: { id },
@@ -90,6 +95,14 @@ export class DevicesService {
         turbiditiesHigh,
       },
     });
+  }
+
+  private async isDeviceExist(id: string) {
+    const device = await this.prisma.device.findUnique({
+      where: { id },
+    });
+
+    return !!device;
   }
 
   private isInRange(value: number, high: Decimal, low: Decimal) {
