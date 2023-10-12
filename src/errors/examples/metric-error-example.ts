@@ -7,4 +7,12 @@ export const MetricErrorExample = {
     error: 'Bad Request',
     statusCode: 400,
   },
+  badRequestAvg: {
+    message: [
+      'startDate must be a valid ISO 8601 date string',
+      'endDate must be a valid ISO 8601 date string',
+    ],
+    error: 'Bad Request',
+    statusCode: 400,
+  },
 };
