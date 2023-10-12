@@ -13,14 +13,18 @@ import { TokenGuard } from 'src/guard/token.guard';
 import { AdminGuard } from 'src/guard/admin.guard';
 import { ArticlesService } from './articles.service';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
 import { ArticleErrorExample } from 'src/errors/examples/article-error-example';
+import { ArticleEntity } from './entities/article.entity';
 
 @Controller('admin/articles')
 @UseGuards(TokenGuard, AdminGuard)
@@ -51,11 +55,39 @@ export class AdminArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @Post()
+  @ApiCreatedResponse({
+    description: 'Created',
+    type: ArticleEntity,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    content: {
+      'application/json': {
+        examples: {
+          badRequest: { value: ArticleErrorExample.badRequest },
+        },
+      },
+    },
+  })
   create(@Body() createArticleDto: CreateArticleDto) {
     return this.articlesService.create(createArticleDto);
   }
 
   @Patch(':id')
+  @ApiOkResponse({
+    description: 'OK',
+    type: ArticleEntity,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    content: {
+      'application/json': {
+        examples: {
+          badRequest: { value: ArticleErrorExample.badRequest },
+        },
+      },
+    },
+  })
   @ApiNotFoundResponse({
     description: 'Not Found',
     content: {
@@ -71,11 +103,20 @@ export class AdminArticlesController {
   }
 
   @Get()
+  @ApiOkResponse({
+    description: 'OK',
+    type: ArticleEntity,
+    isArray: true,
+  })
   findAll() {
     return this.articlesService.findAll();
   }
 
   @Get(':id')
+  @ApiOkResponse({
+    description: 'OK',
+    type: ArticleEntity,
+  })
   @ApiNotFoundResponse({
     description: 'Not Found',
     content: {

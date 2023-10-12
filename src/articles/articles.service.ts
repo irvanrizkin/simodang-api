@@ -9,15 +9,12 @@ export class ArticlesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createArticleDto: CreateArticleDto) {
-    const { title, url, image } = createArticleDto;
     const id = `ART${randomBytes(5).toString('hex')}`;
 
     return await this.prisma.article.create({
       data: {
         id,
-        title,
-        url,
-        image,
+        ...createArticleDto,
       },
     });
   }
@@ -39,7 +36,6 @@ export class ArticlesService {
   }
 
   async update(id: string, updateArticleDto: UpdateArticleDto) {
-    const { title, url, image, published } = updateArticleDto;
     const isExist = this.isArticleExist(id);
 
     if (!isExist) {
@@ -48,12 +44,7 @@ export class ArticlesService {
 
     return await this.prisma.article.update({
       where: { id },
-      data: {
-        title,
-        url,
-        image,
-        published,
-      },
+      data: updateArticleDto,
     });
   }
 

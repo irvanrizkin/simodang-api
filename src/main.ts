@@ -5,6 +5,7 @@ import { ServiceAccount } from 'firebase-admin';
 import * as admin from 'firebase-admin';
 import { PrismaErrorHandlerFilter } from './filter/prisma.error.handler.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +23,8 @@ async function bootstrap() {
   });
 
   app.enableCors();
+
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   const config = new DocumentBuilder()
     .setTitle('Simodang API')
