@@ -4,4 +4,7 @@ import { CreatePondDto } from './create-pond.dto';
 export class UpdatePondDto extends PartialType(CreatePondDto) {
   @ApiPropertyOptional()
   seedDate?: string;
+
+  @ApiPropertyOptional()
+  seedCount?: number;
 }

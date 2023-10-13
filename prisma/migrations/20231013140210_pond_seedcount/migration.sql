@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `pond` ADD COLUMN `seedCount` INTEGER NOT NULL DEFAULT 0;

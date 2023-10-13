@@ -55,8 +55,16 @@ export class PondsService {
   }
 
   async update(id: string, updatePondDto: UpdatePondDto, userId: string) {
-    const { name, address, city, deviceId, imageUrl, isFilled, seedDate } =
-      updatePondDto;
+    const {
+      name,
+      address,
+      city,
+      deviceId,
+      imageUrl,
+      isFilled,
+      seedDate,
+      seedCount,
+    } = updatePondDto;
     const pond = await this.findOne(id);
 
     if (!pond) {
@@ -77,6 +85,7 @@ export class PondsService {
         imageUrl,
         isFilled,
         seedDate,
+        seedCount,
       },
     });
   }
