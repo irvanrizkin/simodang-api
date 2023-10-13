@@ -181,7 +181,7 @@ export class DevicesService {
       });
       return await this.prisma.pond.update({
         where: { id },
-        data: { status: 1 },
+        data: { status: true },
       });
     }
     // ensure the notification only sent once before the count resets to 0
@@ -203,7 +203,7 @@ export class DevicesService {
     });
     return await this.prisma.pond.update({
       where: { id },
-      data: { status: 0 },
+      data: { status: false },
     });
   }
 }
