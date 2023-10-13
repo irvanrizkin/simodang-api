@@ -4,12 +4,16 @@ import { MetricQueryDto } from './dto/metric-query.dto';
 import { TokenGuard } from 'src/guard/token.guard';
 import { AdminGuard } from 'src/guard/admin.guard';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiForbiddenResponse,
+  ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
+import { MetricEntity } from './entities/metric.entity';
+import { MetricErrorExample } from 'src/errors/examples/metric-error-example';
 
 @Controller('admin/metrics')
 @UseGuards(TokenGuard, AdminGuard)
@@ -40,6 +44,21 @@ export class AdminMetricsController {
   constructor(private readonly metricsService: MetricsService) {}
 
   @Get('/device/:id')
+  @ApiOkResponse({
+    description: 'OK',
+    type: MetricEntity,
+    isArray: true,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    content: {
+      'application/json': {
+        examples: {
+          badRequest: { value: MetricErrorExample.badRequest },
+        },
+      },
+    },
+  })
   findDeviceMetricByHour(
     @Param('id') id: string,
     @Query() metricsQueryDto: MetricQueryDto,

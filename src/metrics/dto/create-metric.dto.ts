@@ -1,27 +1,41 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNumber, IsOptional } from 'class-validator';
 
 export class CreateMetricDto {
+  @IsOptional()
   @ApiPropertyOptional()
   master_id: string;
 
+  @IsOptional()
   @ApiPropertyOptional()
   device_id: string;
 
-  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional()
   temper_val: number;
 
-  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional()
   ph_val: number;
 
-  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional()
   oxygen_val: number;
 
-  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional()
   tds_val: number;
 
-  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional()
   turbidities_val: number;
 
+  @IsOptional()
   @ApiPropertyOptional({
     default: '2023-09-21 07:00:00',
     description: 'WIB timezone, follows Python format',
