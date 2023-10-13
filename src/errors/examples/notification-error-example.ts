@@ -9,4 +9,7 @@ export const NotificationErrorExample = {
     error: 'Forbidden',
     statusCode: 403,
   },
+  success: {
+    message: 'all notifications from this user was deleted successfully',
+  },
 };

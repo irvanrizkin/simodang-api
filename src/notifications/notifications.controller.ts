@@ -13,11 +13,13 @@ import {
   ApiBearerAuth,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
 import { NotificationErrorExample } from 'src/errors/examples/notification-error-example';
+import { NotificationEntity } from './entities/notification.entity';
 
 @Controller('notifications')
 @UseGuards(TokenGuard)
@@ -47,6 +49,11 @@ export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 
   @Get()
+  @ApiOkResponse({
+    description: 'OK',
+    type: NotificationEntity,
+    isArray: true,
+  })
   async findAllByToken(@Request() req) {
     const { id: userId } = req.user;
 
@@ -54,6 +61,16 @@ export class NotificationsController {
   }
 
   @Delete()
+  @ApiOkResponse({
+    description: 'OK',
+    content: {
+      'application/json': {
+        examples: {
+          success: { value: NotificationErrorExample.success },
+        },
+      },
+    },
+  })
   async deleteAllByToken(@Request() req) {
     const { id: userId } = req.user;
 
@@ -65,12 +82,16 @@ export class NotificationsController {
   }
 
   @Patch('/:id')
+  @ApiOkResponse({
+    description: 'OK',
+    type: NotificationEntity,
+  })
   @ApiNotFoundResponse({
     description: 'Not Found',
     content: {
       'application/json': {
         examples: {
-          masterNotFound: { value: NotificationErrorExample.notFound },
+          notFound: { value: NotificationErrorExample.notFound },
         },
       },
     },

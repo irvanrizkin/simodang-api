@@ -27,7 +27,7 @@ export class NotificationsService {
 
   async findAllByToken(userId: string) {
     return await this.prisma.notification.findMany({
-      where: { userId, deleted: 0 },
+      where: { userId, deleted: false },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -35,7 +35,7 @@ export class NotificationsService {
   async deleteAllByToken(userId: string) {
     await this.prisma.notification.updateMany({
       where: { userId },
-      data: { deleted: 1 },
+      data: { deleted: true },
     });
   }
 
