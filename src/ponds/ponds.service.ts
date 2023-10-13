@@ -151,7 +151,7 @@ export class PondsService {
         device: {
           update: {
             data: {
-              isChanged: 1,
+              isChanged: true,
             },
           },
         },

@@ -68,12 +68,12 @@ model Master {
 model Device {
   id                    String        @id
   name                  String        @default("")
-  notificationEnabled   Int           @default(1)
+  notificationEnabled   Boolean       @default(true)
   notificationCount     Int           @default(0)
-  isSaved               Int           @default(0)
-  isChanged             Int           @default(0)
-  autoWaterEnabled      Int           @default(0)
-  autoFeedEnabled       Int           @default(0)
+  isSaved               Boolean       @default(false)
+  isChanged             Boolean       @default(false)
+  autoWaterEnabled      Boolean       @default(false)
+  autoFeedEnabled       Boolean       @default(false)
   tempLow               Decimal       @default(0)   @db.Decimal(10,1)
   tempHigh              Decimal       @default(0)   @db.Decimal(10,1)
   phLow                 Decimal       @default(0)   @db.Decimal(10,1)
