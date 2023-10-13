@@ -44,7 +44,7 @@ model Notification {
   id            String        @id
   title         String        @default("")
   message       String        @default("")
-  deleted       Int           @default(0)
+  deleted       Boolean       @default(false)
   isRead        Boolean       @default(false)
   createdAt     DateTime      @default(now())
   user          User          @relation(fields: [userId], references: [id])
