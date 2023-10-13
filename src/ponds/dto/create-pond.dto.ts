@@ -17,5 +17,5 @@ export class CreatePondDto {
   imageUrl: string;
 
   @ApiPropertyOptional()
-  isFilled: number;
+  isFilled: boolean;
 }

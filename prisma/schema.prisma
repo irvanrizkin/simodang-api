@@ -103,8 +103,8 @@ model Pond {
   city                  String        @default("")
   seedDate              DateTime      @default(now())
   imageUrl              String        @default("https://placehold.co/1280x720.png")
-  status                Int           @default(0)
-  isFilled              Int           @default(0)
+  status                Boolean       @default(false)
+  isFilled              Boolean       @default(false)
   createdAt             DateTime      @default(now())
   user                  User?         @relation(fields: [userId], references: [id])
   userId                String?
