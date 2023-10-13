@@ -3,16 +3,16 @@ import { CreateDeviceDto } from './create-device.dto';
 
 export class UpdateDeviceDto extends PartialType(CreateDeviceDto) {
   @ApiPropertyOptional()
-  notificationEnabled?: number;
+  notificationEnabled?: boolean;
 
   @ApiPropertyOptional()
-  autoWaterEnabled?: number;
+  autoWaterEnabled?: boolean;
 
   @ApiPropertyOptional()
-  autoFeedEnabled?: number;
+  autoFeedEnabled?: boolean;
 
   @ApiPropertyOptional()
-  isSaved?: number;
+  isSaved?: boolean;
 
   @ApiPropertyOptional()
   tempLow?: number;

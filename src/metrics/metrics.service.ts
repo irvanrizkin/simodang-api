@@ -100,7 +100,7 @@ export class MetricsService {
       );
     }
 
-    if (device && device.isSaved === 1) {
+    if (device && device.isSaved === true) {
       return await this.prisma.metric.create({
         data: {
           id,
@@ -117,7 +117,7 @@ export class MetricsService {
       });
     }
 
-    if (device && device.isSaved === 0) {
+    if (device && device.isSaved === false) {
       return await this.prisma.metricTemp.create({
         data: {
           id: tempId,

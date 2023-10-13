@@ -2,16 +2,16 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdatePondPropDto {
   @ApiPropertyOptional()
-  notificationEnabled?: number;
+  notificationEnabled?: boolean;
 
   @ApiPropertyOptional()
-  autoWaterEnabled?: number;
+  autoWaterEnabled?: boolean;
 
   @ApiPropertyOptional()
-  autoFeedEnabled?: number;
+  autoFeedEnabled?: boolean;
 
   @ApiPropertyOptional()
-  isSaved?: number;
+  isSaved?: boolean;
 
   @ApiPropertyOptional()
   tempLow?: number;
