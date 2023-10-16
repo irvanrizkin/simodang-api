@@ -15,6 +15,7 @@ import { UpdateDeviceDto } from './dto/update-device.dto';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -54,8 +55,8 @@ export class AdminDevicesController {
   constructor(private readonly devicesService: DevicesService) {}
 
   @Post()
-  @ApiOkResponse({
-    description: 'OK',
+  @ApiCreatedResponse({
+    description: 'Created',
     type: DeviceEntity,
   })
   @ApiBadRequestResponse({
