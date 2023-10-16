@@ -184,8 +184,8 @@ export class DevicesService {
         data: { status: true },
       });
     }
-    // ensure the notification only sent once before the count resets to 0
-    if (notificationCount === 0) {
+    // ensure the notification only sent every 6 count
+    if (notificationCount % 6 === 0) {
       await this.notificationsService.create(userId, {
         title: `Kolam ${name} berada dalam kondisi tidak baik`,
         message: `Parameter yang terdampak ${outOfRange.toString()}`,
