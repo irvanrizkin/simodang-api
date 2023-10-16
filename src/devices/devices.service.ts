@@ -41,10 +41,16 @@ export class DevicesService {
   }
 
   async findOne(id: string) {
-    return await this.prisma.device.findUnique({
+    const device = await this.prisma.device.findUnique({
       where: { id },
       include: { pond: true },
     });
+
+    if (!device) {
+      throw new NotFoundException('device not found');
+    }
+
+    return device;
   }
 
   async update(id: string, updateDeviceDto: UpdateDeviceDto) {
