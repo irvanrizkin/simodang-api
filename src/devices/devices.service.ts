@@ -18,15 +18,8 @@ export class DevicesService {
   ) {}
 
   async create(createDeviceDto: CreateDeviceDto) {
-    const { id, name, userId, masterId } = createDeviceDto;
-
     return await this.prisma.device.create({
-      data: {
-        id,
-        name,
-        userId,
-        masterId,
-      },
+      data: createDeviceDto,
     });
   }
 
@@ -41,32 +34,19 @@ export class DevicesService {
   }
 
   async findOne(id: string) {
-    return await this.prisma.device.findUnique({
+    const device = await this.prisma.device.findUnique({
       where: { id },
       include: { pond: true },
     });
+
+    if (!device) {
+      throw new NotFoundException('device not found');
+    }
+
+    return device;
   }
 
   async update(id: string, updateDeviceDto: UpdateDeviceDto) {
-    const {
-      name,
-      userId,
-      masterId,
-      notificationEnabled,
-      autoWaterEnabled,
-      autoFeedEnabled,
-      isSaved,
-      tempLow,
-      tempHigh,
-      phLow,
-      phHigh,
-      tdoLow,
-      tdoHigh,
-      tdsLow,
-      tdsHigh,
-      turbiditiesLow,
-      turbiditiesHigh,
-    } = updateDeviceDto;
     const isExist = await this.isDeviceExist(id);
 
     if (!isExist) {
@@ -75,25 +55,7 @@ export class DevicesService {
 
     return await this.prisma.device.update({
       where: { id },
-      data: {
-        name,
-        userId,
-        masterId,
-        notificationEnabled,
-        autoWaterEnabled,
-        autoFeedEnabled,
-        isSaved,
-        tempLow,
-        tempHigh,
-        phLow,
-        phHigh,
-        tdoLow,
-        tdoHigh,
-        tdsLow,
-        tdsHigh,
-        turbiditiesLow,
-        turbiditiesHigh,
-      },
+      data: updateDeviceDto,
     });
   }
 

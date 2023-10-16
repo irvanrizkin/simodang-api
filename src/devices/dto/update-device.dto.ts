@@ -1,46 +1,106 @@
-import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { ApiPropertyOptional, OmitType, PartialType } from '@nestjs/swagger';
 import { CreateDeviceDto } from './create-device.dto';
+import { IsBoolean, IsNumber, IsOptional } from 'class-validator';
 
-export class UpdateDeviceDto extends PartialType(CreateDeviceDto) {
-  @ApiPropertyOptional()
+export class UpdateDeviceDto extends PartialType(
+  OmitType(CreateDeviceDto, ['id'] as const),
+) {
+  @IsBoolean()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'to show the device is enabled to send notification or not',
+  })
   notificationEnabled?: boolean;
 
-  @ApiPropertyOptional()
+  @IsBoolean()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'to show the device auto water system is enabled or not',
+  })
   autoWaterEnabled?: boolean;
 
-  @ApiPropertyOptional()
+  @IsBoolean()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'to show the device auto shrimp feed system is enabled or not',
+  })
   autoFeedEnabled?: boolean;
 
+  @IsBoolean()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'if false, the metric will be saved on temp table',
+  })
   @ApiPropertyOptional()
   isSaved?: boolean;
 
-  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'low threshold for temperature',
+  })
   tempLow?: number;
 
-  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'high threshold for temperature',
+  })
   tempHigh?: number;
 
-  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'low threshold for ph',
+  })
   phLow?: number;
 
-  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'high threshold for ph',
+  })
   phHigh?: number;
 
-  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'low threshold for total dissolved oxygen',
+  })
   tdoLow?: number;
 
-  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'high threshold for total dissolved oxygen',
+  })
   tdoHigh?: number;
 
-  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'low threshold for total dissolved solids',
+  })
   tdsLow?: number;
 
-  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'high threshold for total dissolved solids',
+  })
   tdsHigh?: number;
 
-  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'low threshold for turbidities',
+  })
   turbiditiesLow?: number;
 
-  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'high threshold for turbidities',
+  })
   turbiditiesHigh?: number;
 }
