@@ -1,15 +1,31 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateDeviceDto {
-  @ApiPropertyOptional()
+  @IsString()
+  @ApiProperty({
+    description: 'device id for identifier, must unique and string',
+  })
   id: string;
 
-  @ApiPropertyOptional()
+  @IsString()
+  @ApiProperty({
+    description: 'name of the device, must string',
+  })
   name: string;
 
-  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'to show the ownership of the device, if empty will be null',
+  })
   userId?: string;
 
-  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description:
+      'to show the device belongs to which master, if empty will be null',
+  })
   masterId?: string;
 }
