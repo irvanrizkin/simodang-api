@@ -18,15 +18,8 @@ export class DevicesService {
   ) {}
 
   async create(createDeviceDto: CreateDeviceDto) {
-    const { id, name, userId, masterId } = createDeviceDto;
-
     return await this.prisma.device.create({
-      data: {
-        id,
-        name,
-        userId,
-        masterId,
-      },
+      data: createDeviceDto,
     });
   }
 
@@ -54,25 +47,6 @@ export class DevicesService {
   }
 
   async update(id: string, updateDeviceDto: UpdateDeviceDto) {
-    const {
-      name,
-      userId,
-      masterId,
-      notificationEnabled,
-      autoWaterEnabled,
-      autoFeedEnabled,
-      isSaved,
-      tempLow,
-      tempHigh,
-      phLow,
-      phHigh,
-      tdoLow,
-      tdoHigh,
-      tdsLow,
-      tdsHigh,
-      turbiditiesLow,
-      turbiditiesHigh,
-    } = updateDeviceDto;
     const isExist = await this.isDeviceExist(id);
 
     if (!isExist) {
@@ -81,25 +55,7 @@ export class DevicesService {
 
     return await this.prisma.device.update({
       where: { id },
-      data: {
-        name,
-        userId,
-        masterId,
-        notificationEnabled,
-        autoWaterEnabled,
-        autoFeedEnabled,
-        isSaved,
-        tempLow,
-        tempHigh,
-        phLow,
-        phHigh,
-        tdoLow,
-        tdoHigh,
-        tdsLow,
-        tdsHigh,
-        turbiditiesLow,
-        turbiditiesHigh,
-      },
+      data: updateDeviceDto,
     });
   }
 
