@@ -62,10 +62,11 @@ export class PondsService {
       deviceId,
       imageUrl,
       isFilled,
-      seedDate,
+      seedDate: date,
       seedCount,
     } = updatePondDto;
     const pond = await this.findOne(id);
+    const seedDate = new Date(date);
 
     if (!pond) {
       throw new NotFoundException('pond not found');
