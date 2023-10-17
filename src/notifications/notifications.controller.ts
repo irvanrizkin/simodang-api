@@ -81,7 +81,7 @@ export class NotificationsController {
     };
   }
 
-  @Patch('/:id')
+  @Patch('/:notificationId')
   @ApiOkResponse({
     description: 'OK',
     type: NotificationEntity,
@@ -106,7 +106,7 @@ export class NotificationsController {
       },
     },
   })
-  async updateIsRead(@Param('id') id: string, @Request() req) {
+  async updateIsRead(@Param('notificationId') id: string, @Request() req) {
     const { id: userId } = req.user;
 
     return this.notificationsService.updateIsRead(id, userId);

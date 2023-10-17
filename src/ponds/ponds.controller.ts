@@ -87,7 +87,7 @@ export class PondsController {
     return this.pondsService.findAllByUser(id);
   }
 
-  @Get(':id')
+  @Get(':pondId')
   @ApiNotFoundResponse({
     description: 'Not Found',
     content: {
@@ -102,11 +102,11 @@ export class PondsController {
     description: 'OK',
     type: PondEntity,
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('pondId') id: string) {
     return this.pondsService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch(':pondId')
   @ApiNotFoundResponse({
     description: 'Not Found',
     content: {
@@ -143,7 +143,7 @@ export class PondsController {
   })
   update(
     @Request() req,
-    @Param('id') id: string,
+    @Param('pondId') id: string,
     @Body() updatePondDto: UpdatePondDto,
   ) {
     const { id: userId } = req.user;
@@ -151,7 +151,7 @@ export class PondsController {
     return this.pondsService.update(id, updatePondDto, userId);
   }
 
-  @Patch(':id/device')
+  @Patch(':pondId/device')
   @ApiNotFoundResponse({
     description: 'Not Found',
     content: {
@@ -175,7 +175,7 @@ export class PondsController {
   })
   updateDeviceProperties(
     @Request() req,
-    @Param('id') id: string,
+    @Param('pondId') id: string,
     @Body() updatePondPropDto: UpdatePondPropDto,
   ) {
     const { id: userId } = req.user;

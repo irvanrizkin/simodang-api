@@ -44,7 +44,7 @@ export class AuthController {
     return this.authService.logout(id);
   }
 
-  @Post(':uid')
+  @Post(':firebaseUid')
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
     content: {
@@ -55,7 +55,7 @@ export class AuthController {
       },
     },
   })
-  async loginFirebase(@Param('uid') uid: string) {
+  async loginFirebase(@Param('firebaseUid') uid: string) {
     return await this.authService.loginFirebase(uid);
   }
 }

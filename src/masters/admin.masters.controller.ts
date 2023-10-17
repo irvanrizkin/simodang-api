@@ -73,7 +73,7 @@ export class AdminMastersController {
     return this.mastersService.create(createMasterDto);
   }
 
-  @Patch(':id')
+  @Patch(':masterId')
   @ApiOkResponse({
     description: 'OK',
     type: MasterEntity,
@@ -98,7 +98,10 @@ export class AdminMastersController {
       },
     },
   })
-  update(@Param('id') id: string, @Body() updateMasterDto: UpdateMasterDto) {
+  update(
+    @Param('masterId') id: string,
+    @Body() updateMasterDto: UpdateMasterDto,
+  ) {
     return this.mastersService.update(id, updateMasterDto);
   }
 
@@ -112,7 +115,7 @@ export class AdminMastersController {
     return this.mastersService.findAll();
   }
 
-  @Get(':id')
+  @Get(':masterId')
   @ApiOkResponse({
     description: 'OK',
     type: MasterEntity,
@@ -127,7 +130,7 @@ export class AdminMastersController {
       },
     },
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('masterId') id: string) {
     return this.mastersService.findOne(id);
   }
 }

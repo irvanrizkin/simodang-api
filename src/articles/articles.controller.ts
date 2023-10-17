@@ -19,7 +19,7 @@ export class ArticlesController {
     return this.articlesService.findAll();
   }
 
-  @Get(':id')
+  @Get(':articleId')
   @ApiOkResponse({
     description: 'OK',
     type: ArticleEntity,
@@ -34,7 +34,7 @@ export class ArticlesController {
       },
     },
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('articleId') id: string) {
     return this.articlesService.findOne(id);
   }
 }
