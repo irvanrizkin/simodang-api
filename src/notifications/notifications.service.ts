@@ -12,15 +12,13 @@ export class NotificationsService {
   constructor(private prisma: PrismaService) {}
 
   async create(userId: string, createNotificationDto: CreateNotificationDto) {
-    const { title, message } = createNotificationDto;
     const id = `NOT${randomBytes(5).toString('hex')}`;
 
     return await this.prisma.notification.create({
       data: {
         id,
-        title,
-        message,
         userId,
+        ...createNotificationDto,
       },
     });
   }
