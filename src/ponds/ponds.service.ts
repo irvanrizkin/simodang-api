@@ -51,7 +51,9 @@ export class PondsService {
   async update(id: string, updatePondDto: UpdatePondDto, userId: string) {
     const { isFilled, seedDate: date } = updatePondDto;
     const pond = await this.findOne(id);
-    const seedDate = new Date(date);
+    const dateObj = new Date(date);
+    const seedDate =
+      dateObj.toString() === 'Invalid Date' ? undefined : dateObj;
 
     if (!pond) {
       throw new NotFoundException('pond not found');
