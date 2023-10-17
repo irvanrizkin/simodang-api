@@ -8,15 +8,8 @@ export class MastersService {
   constructor(private prisma: PrismaService) {}
 
   async create(createMasterDto: CreateMasterDto) {
-    const { id, name, simNumber, userId } = createMasterDto;
-
     return await this.prisma.master.create({
-      data: {
-        id,
-        name,
-        simNumber,
-        userId,
-      },
+      data: createMasterDto,
     });
   }
 
@@ -37,7 +30,6 @@ export class MastersService {
   }
 
   async update(id: string, updateMasterDto: UpdateMasterDto) {
-    const { name, simNumber, userId } = updateMasterDto;
     const isExist = this.isMasterExist(id);
 
     if (!isExist) {
@@ -46,11 +38,7 @@ export class MastersService {
 
     return await this.prisma.master.update({
       where: { id },
-      data: {
-        name,
-        simNumber,
-        userId,
-      },
+      data: updateMasterDto,
     });
   }
 
