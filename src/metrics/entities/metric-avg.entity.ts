@@ -1,21 +1,33 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class MetricAvgEntity {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Averaged date of the metric. In ISO format.',
+  })
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'temperature in average',
+  })
   temperature: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'ph in average',
+  })
   ph: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'total dissolved oxygen in average',
+  })
   tdo: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'total dissolved solids in average',
+  })
   tds: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'turbidities in average',
+  })
   turbidity: string;
 }
