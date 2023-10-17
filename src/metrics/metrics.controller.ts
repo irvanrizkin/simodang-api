@@ -49,7 +49,7 @@ export class MetricsController {
     return this.metricsService.create(createMetricDto);
   }
 
-  @Get('/:id')
+  @Get('/:pondId')
   @ApiOkResponse({
     description: 'OK',
     type: MetricEntity,
@@ -66,7 +66,7 @@ export class MetricsController {
     },
   })
   findAllMetricsByHour(
-    @Param('id') id: string,
+    @Param('pondId') id: string,
     @Query() metricsQueryDto: MetricQueryDto,
   ) {
     return this.metricsService.findAllMetricsByHour(id, metricsQueryDto);
@@ -87,9 +87,9 @@ export class MetricsController {
       },
     },
   })
-  @Get('/avg/:id')
+  @Get('/avg/:pondId')
   findAveragedMetricsByRangeDate(
-    @Param('id') id: string,
+    @Param('pondId') id: string,
     @Query() metricAvgQueryDto: MetricAvgQueryDto,
   ) {
     return this.metricsService.findAveragedMetricsByRangeDate(
@@ -98,12 +98,12 @@ export class MetricsController {
     );
   }
 
-  @Get('/last/:id')
+  @Get('/last/:pondId')
   @ApiOkResponse({
     description: 'OK',
     type: MetricEntity,
   })
-  findLastMetric(@Param('id') id: string) {
+  findLastMetric(@Param('pondId') id: string) {
     return this.metricsService.findLastMetric(id);
   }
 }

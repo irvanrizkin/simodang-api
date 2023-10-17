@@ -73,7 +73,7 @@ export class AdminArticlesController {
     return this.articlesService.create(createArticleDto);
   }
 
-  @Patch(':id')
+  @Patch(':articleId')
   @ApiOkResponse({
     description: 'OK',
     type: ArticleEntity,
@@ -98,7 +98,10 @@ export class AdminArticlesController {
       },
     },
   })
-  update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
+  update(
+    @Param('articleId') id: string,
+    @Body() updateArticleDto: UpdateArticleDto,
+  ) {
     return this.articlesService.update(id, updateArticleDto);
   }
 
@@ -112,7 +115,7 @@ export class AdminArticlesController {
     return this.articlesService.findAll();
   }
 
-  @Get(':id')
+  @Get(':articleId')
   @ApiOkResponse({
     description: 'OK',
     type: ArticleEntity,
@@ -127,7 +130,7 @@ export class AdminArticlesController {
       },
     },
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('articleId') id: string) {
     return this.articlesService.findOne(id);
   }
 }

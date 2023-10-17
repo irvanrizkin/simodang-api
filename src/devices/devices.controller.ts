@@ -53,7 +53,7 @@ export class DevicesController {
     return this.devicesService.findAllByUser(id);
   }
 
-  @Get(':id')
+  @Get(':deviceId')
   @ApiOkResponse({
     description: 'OK',
     type: DevicePondEntity,
@@ -68,7 +68,7 @@ export class DevicesController {
       },
     },
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('deviceId') id: string) {
     return this.devicesService.findOne(id);
   }
 }

@@ -1,45 +1,6 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { OmitType, PartialType } from '@nestjs/swagger';
+import { UpdateDeviceDto } from 'src/devices/dto/update-device.dto';
 
-export class UpdatePondPropDto {
-  @ApiPropertyOptional()
-  notificationEnabled?: boolean;
-
-  @ApiPropertyOptional()
-  autoWaterEnabled?: boolean;
-
-  @ApiPropertyOptional()
-  autoFeedEnabled?: boolean;
-
-  @ApiPropertyOptional()
-  isSaved?: boolean;
-
-  @ApiPropertyOptional()
-  tempLow?: number;
-
-  @ApiPropertyOptional()
-  tempHigh?: number;
-
-  @ApiPropertyOptional()
-  phLow?: number;
-
-  @ApiPropertyOptional()
-  phHigh?: number;
-
-  @ApiPropertyOptional()
-  tdoLow?: number;
-
-  @ApiPropertyOptional()
-  tdoHigh?: number;
-
-  @ApiPropertyOptional()
-  tdsLow?: number;
-
-  @ApiPropertyOptional()
-  tdsHigh?: number;
-
-  @ApiPropertyOptional()
-  turbiditiesLow?: number;
-
-  @ApiPropertyOptional()
-  turbiditiesHigh?: number;
-}
+export class UpdatePondPropDto extends PartialType(
+  OmitType(UpdateDeviceDto, ['name', 'userId', 'masterId'] as const),
+) {}

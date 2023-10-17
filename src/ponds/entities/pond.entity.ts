@@ -2,39 +2,63 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Pond } from '@prisma/client';
 
 export class PondEntity implements Pond {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Pond id for identifier, automatically generated.',
+  })
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Name of the pond.',
+  })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Address of the pond.',
+  })
   address: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'City of the pond.',
+  })
   city: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Seed date of the pond.',
+  })
   seedDate: Date;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Seed count of the pond.',
+  })
   seedCount: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Image url of the pond.',
+  })
   imageUrl: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Status whether the pond is in good or bad state',
+  })
   status: boolean;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Status whether the pond filled by shrimp of not.',
+  })
   isFilled: boolean;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Date when the pond is created. In ISO format.',
+  })
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'To determine the owner of the pond.',
+  })
   userId: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'To determine which device connected to this pond',
+  })
   deviceId: string;
 }

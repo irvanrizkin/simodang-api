@@ -2,21 +2,34 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Article } from '@prisma/client';
 
 export class ArticleEntity implements Article {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Article id for identifier, automatically generated.',
+  })
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Title of the article.',
+  })
   title: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Link to the article for Webview.',
+  })
   url: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Link to the image for `<img>` tag.',
+  })
   image: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description:
+      'Determine if article is published or not. If true, the article is public',
+  })
   published: boolean;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Date when the article is created. In ISO format.',
+  })
   createdAt: Date;
 }

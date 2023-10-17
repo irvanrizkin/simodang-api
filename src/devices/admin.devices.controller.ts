@@ -73,7 +73,7 @@ export class AdminDevicesController {
     return this.devicesService.create(createDeviceDto);
   }
 
-  @Patch(':id')
+  @Patch(':deviceId')
   @ApiNotFoundResponse({
     description: 'Not Found',
     content: {
@@ -98,7 +98,10 @@ export class AdminDevicesController {
       },
     },
   })
-  update(@Param('id') id: string, @Body() updateDeviceDto: UpdateDeviceDto) {
+  update(
+    @Param('deviceId') id: string,
+    @Body() updateDeviceDto: UpdateDeviceDto,
+  ) {
     return this.devicesService.update(id, updateDeviceDto);
   }
 

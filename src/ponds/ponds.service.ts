@@ -14,19 +14,13 @@ export class PondsService {
   constructor(private prisma: PrismaService) {}
 
   async create(createPondDto: CreatePondDto, userId: string) {
-    const { name, address, city, deviceId, imageUrl, isFilled } = createPondDto;
     const id = `PON${randomBytes(5).toString('hex')}`;
 
     return await this.prisma.pond.create({
       data: {
         id,
-        name,
-        address,
-        city,
-        deviceId,
-        imageUrl,
-        isFilled,
         userId,
+        ...createPondDto,
       },
     });
   }
@@ -55,16 +49,7 @@ export class PondsService {
   }
 
   async update(id: string, updatePondDto: UpdatePondDto, userId: string) {
-    const {
-      name,
-      address,
-      city,
-      deviceId,
-      imageUrl,
-      isFilled,
-      seedDate: date,
-      seedCount,
-    } = updatePondDto;
+    const { isFilled, seedDate: date } = updatePondDto;
     const pond = await this.findOne(id);
     const seedDate = new Date(date);
 
@@ -79,14 +64,9 @@ export class PondsService {
     return await this.prisma.pond.update({
       where: { id },
       data: {
-        name,
-        address,
-        city,
-        deviceId,
-        imageUrl,
+        ...updatePondDto,
         isFilled,
         seedDate,
-        seedCount,
       },
     });
   }
@@ -96,22 +76,6 @@ export class PondsService {
     updatePondPropDto: UpdatePondPropDto,
     userId: string,
   ) {
-    const {
-      notificationEnabled,
-      autoWaterEnabled,
-      autoFeedEnabled,
-      isSaved,
-      tempLow,
-      tempHigh,
-      phLow,
-      phHigh,
-      tdoLow,
-      tdoHigh,
-      tdsLow,
-      tdsHigh,
-      turbiditiesLow,
-      turbiditiesHigh,
-    } = updatePondPropDto;
     const pond = await this.findOne(id);
 
     if (!pond) {
@@ -131,22 +95,7 @@ export class PondsService {
       data: {
         device: {
           update: {
-            data: {
-              notificationEnabled,
-              autoWaterEnabled,
-              autoFeedEnabled,
-              isSaved,
-              tempLow,
-              tempHigh,
-              phLow,
-              phHigh,
-              tdoLow,
-              tdoHigh,
-              tdsLow,
-              tdsHigh,
-              turbiditiesLow,
-              turbiditiesHigh,
-            },
+            data: updatePondPropDto,
           },
         },
       },

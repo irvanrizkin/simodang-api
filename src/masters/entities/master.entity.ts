@@ -2,18 +2,28 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Master } from '@prisma/client';
 
 export class MasterEntity implements Master {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Master id for identifier. Filled by admin',
+  })
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Name of the master.',
+  })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'A phone number for IoT GSM connection',
+  })
   simNumber: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Date when the master is created. In ISO format.',
+  })
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'To determine the owner of the master.',
+  })
   userId: string;
 }

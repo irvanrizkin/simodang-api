@@ -5,10 +5,12 @@ import { LogService } from './log.service';
 import {
   ApiBearerAuth,
   ApiForbiddenResponse,
+  ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
+import { LogEntity } from './entities/log.entity';
 
 @Controller('admin/log')
 @UseGuards(TokenGuard, AdminGuard)
@@ -39,6 +41,11 @@ export class AdminLogController {
   constructor(private readonly logService: LogService) {}
 
   @Get()
+  @ApiOkResponse({
+    description: 'OK',
+    type: LogEntity,
+    isArray: true,
+  })
   findAll() {
     return this.logService.findAll();
   }

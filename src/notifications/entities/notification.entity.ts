@@ -2,24 +2,38 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Notification } from '@prisma/client';
 
 export class NotificationEntity implements Notification {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Notification id for identifier, automatically generated.',
+  })
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Title of the notification. Usually in bold',
+  })
   title: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Content of the notification.',
+  })
   message: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'If true, the notification will be hidden from user.',
+  })
   deleted: boolean;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'If true, the notification has been read by user.',
+  })
   isRead: boolean;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Date when the notification is created. In ISO format.',
+  })
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'To determine the owner of the notification.',
+  })
   userId: string;
 }

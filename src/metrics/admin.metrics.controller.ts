@@ -43,7 +43,7 @@ import { MetricErrorExample } from 'src/errors/examples/metric-error-example';
 export class AdminMetricsController {
   constructor(private readonly metricsService: MetricsService) {}
 
-  @Get('/device/:id')
+  @Get('/device/:deviceId')
   @ApiOkResponse({
     description: 'OK',
     type: MetricEntity,
@@ -60,7 +60,7 @@ export class AdminMetricsController {
     },
   })
   findDeviceMetricByHour(
-    @Param('id') id: string,
+    @Param('deviceId') id: string,
     @Query() metricsQueryDto: MetricQueryDto,
   ) {
     return this.metricsService.findDeviceMetricByHour(id, metricsQueryDto);
