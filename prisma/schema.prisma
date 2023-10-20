@@ -103,7 +103,7 @@ model Pond {
   city                  String        @default("")
   seedDate              DateTime      @default(now())
   seedCount             Int           @default(0)
-  imageUrl              String        @default("https://placehold.co/1280x720.png")
+  imageUrl              String        @db.Text
   status                Boolean       @default(false)
   isFilled              Boolean       @default(false)
   createdAt             DateTime      @default(now())
