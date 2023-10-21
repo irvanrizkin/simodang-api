@@ -41,6 +41,7 @@ async function bootstrap() {
     .addTag('metrics')
     .addTag('admin/metrics')
     .addTag('notifications')
+    .addTag('admin/ponds')
     .addTag('ponds')
     .addTag('users')
     .addTag('admin/users')
