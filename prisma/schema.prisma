@@ -32,8 +32,8 @@ model User {
 model Article {
   id            String        @id
   title         String        @default("")
-  url           String        @default("")
-  image         String        @default("")
+  url           String        @db.Text
+  image         String        @db.Text
   published     Boolean       @default(false)
   createdAt     DateTime      @default(now())
 
