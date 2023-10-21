@@ -15,12 +15,20 @@ export class PondsService {
 
   async create(createPondDto: CreatePondDto, userId: string) {
     const id = `PON${randomBytes(5).toString('hex')}`;
+    const { deviceId: deviceIdStr } = createPondDto;
+
+    let deviceId = deviceIdStr;
+
+    if (!deviceId) {
+      deviceId = null;
+    }
 
     return await this.prisma.pond.create({
       data: {
+        ...createPondDto,
         id,
         userId,
-        ...createPondDto,
+        deviceId,
       },
     });
   }
@@ -49,11 +57,17 @@ export class PondsService {
   }
 
   async update(id: string, updatePondDto: UpdatePondDto, userId: string) {
-    const { isFilled, seedDate: date } = updatePondDto;
+    const { isFilled, seedDate: date, deviceId: deviceIdStr } = updatePondDto;
     const pond = await this.findOne(id);
     const dateObj = new Date(date);
     const seedDate =
       dateObj.toString() === 'Invalid Date' ? undefined : dateObj;
+
+    let deviceId = deviceIdStr;
+
+    if (!deviceId) {
+      deviceId = null;
+    }
 
     if (!pond) {
       throw new NotFoundException('pond not found');
@@ -69,6 +83,7 @@ export class PondsService {
         ...updatePondDto,
         isFilled,
         seedDate,
+        deviceId,
       },
     });
   }
