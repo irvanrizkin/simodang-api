@@ -139,4 +139,19 @@ export class PondsService {
 
     return pondDevice;
   }
+
+  async remove(id: string) {
+    const pond = await this.prisma.pond.findUnique({
+      where: { id },
+      include: { device: true },
+    });
+
+    if (!pond) {
+      throw new NotFoundException('pond not found');
+    }
+
+    return await this.prisma.pond.delete({
+      where: { id },
+    });
+  }
 }
