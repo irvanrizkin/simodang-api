@@ -36,6 +36,7 @@ async function bootstrap() {
     .addTag('auth')
     .addTag('devices')
     .addTag('admin/devices')
+    .addTag('iot/devices')
     .addTag('admin/log')
     .addTag('admin/masters')
     .addTag('metrics')
