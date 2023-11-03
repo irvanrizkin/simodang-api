@@ -40,6 +40,9 @@ export class PondsService {
   async findAllByUser(userId: string) {
     return this.prisma.pond.findMany({
       where: { userId },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 
