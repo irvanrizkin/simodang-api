@@ -20,7 +20,14 @@ export class ArticlesService {
   }
 
   async findAll() {
-    return await this.prisma.article.findMany();
+    return await this.prisma.article.findMany({
+      where: {
+        published: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 
   async findOne(id: string) {
