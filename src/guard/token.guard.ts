@@ -20,9 +20,24 @@ export class TokenGuard implements CanActivate {
     const user = await this.prisma.user.findFirst({
       where: { token },
     });
-    if (!user) throw new ForbiddenException('token not match any user');
 
-    request['user'] = user;
+    if (user) {
+      request['user'] = user;
+
+      return true;
+    }
+
+    const tokenInstance = await this.prisma.token.findFirst({
+      where: { token },
+      include: { user: true },
+    });
+    if (!tokenInstance)
+      throw new ForbiddenException('token not match any user');
+
+    const { user: userV2 } = tokenInstance;
+
+    request['user'] = userV2;
+    request['token'] = token;
 
     return true;
   }
