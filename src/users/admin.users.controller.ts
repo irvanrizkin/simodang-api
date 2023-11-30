@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { AdminGuard } from 'src/guard/admin.guard';
 import { TokenGuard } from 'src/guard/token.guard';
 import { UsersService } from './users.service';
@@ -9,6 +9,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
+import { AdminUpdateUserDto } from './admin-update-user.dto';
 
 @Controller('admin/users')
 @UseGuards(TokenGuard, AdminGuard)
@@ -41,5 +42,10 @@ export class AdminUsersController {
   @Get()
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @Patch('/:id')
+  update(@Param('id') id, @Body() adminupdateUserDto: AdminUpdateUserDto) {
+    return this.usersService.update(id, adminupdateUserDto);
   }
 }
