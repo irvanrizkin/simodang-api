@@ -25,8 +25,18 @@ model User {
   masters       Master[]
   devices       Device[]
   ponds         Pond[]
+  tokens        Token[]
 
   @@map("user")
+}
+
+model Token {
+  id            String        @id
+  token         String        @default("")
+  user          User          @relation(fields: [userId], references: [id])
+  userId        String
+
+  @@map("token")
 }
 
 model Article {
