@@ -53,6 +53,13 @@ export class DevicesController {
     return this.devicesService.findAllByUser(id);
   }
 
+  @Get('/v2')
+  findAllByUserWithPond(@Request() req) {
+    const { id } = req.user;
+
+    return this.devicesService.findAllByUserWithPond(id);
+  }
+
   @Get(':deviceId')
   @ApiOkResponse({
     description: 'OK',
