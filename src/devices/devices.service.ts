@@ -33,6 +33,13 @@ export class DevicesService {
     });
   }
 
+  async findAllByUserWithPond(userId: string) {
+    return this.prisma.device.findMany({
+      include: { pond: true },
+      where: { userId },
+    });
+  }
+
   async findOne(id: string) {
     const device = await this.prisma.device.findUnique({
       where: { id },
