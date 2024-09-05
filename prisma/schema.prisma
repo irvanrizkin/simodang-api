@@ -169,3 +169,15 @@ model Log {
 
   @@map("log")
 }
+
+model PricingPlan {
+  id                    String        @id                   @default(cuid())
+  name                  String        @default("")
+  description           String        @default("")
+  pondLimit             Int           @default(0)
+  duration              Int           @default(0)
+  price                 Int           @default(0)
+  createdAt             DateTime      @default(now())
+
+  @@map("pricingplan")
+}

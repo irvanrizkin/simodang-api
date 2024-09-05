@@ -12,6 +12,7 @@ import { UsersModule } from './users/users.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LogModule } from './log/log.module';
+import { PricingPlanModule } from './pricing-plan/pricing-plan.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { LogModule } from './log/log.module';
     UsersModule,
     MetricsModule,
     LogModule,
+    PricingPlanModule,
   ],
   controllers: [AppController],
   providers: [AppService],

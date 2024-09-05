@@ -46,12 +46,14 @@ async function bootstrap() {
     .addTag('ponds')
     .addTag('users')
     .addTag('admin/users')
+    .addTag('pricing-plan')
+    .addTag('admin/pricing-plan')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaErrorHandlerFilter(httpAdapter));
-  await app.listen(5000);
+  await app.listen(8000);
 }
 bootstrap();
