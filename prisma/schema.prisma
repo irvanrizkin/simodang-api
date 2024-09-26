@@ -26,6 +26,7 @@ model User {
   devices       Device[]
   ponds         Pond[]
   tokens        Token[]
+  subscriptions Subscription[]
 
   @@map("user")
 }
@@ -178,6 +179,19 @@ model PricingPlan {
   duration              Int           @default(0)
   price                 Int           @default(0)
   createdAt             DateTime      @default(now())
+  subscriptions         Subscription[]
 
   @@map("pricingplan")
+}
+
+model Subscription {
+  id                    String        @id                   @default(cuid())
+  status                Boolean       @default(true)
+  expiredAt             DateTime      @default(now())
+  user                  User?         @relation(fields: [userId], references: [id])
+  userId                String?
+  pricingPlan           PricingPlan?  @relation(fields: [pricingPlanId], references: [id])
+  pricingPlanId         String?
+
+  @@map("subscription")
 }
