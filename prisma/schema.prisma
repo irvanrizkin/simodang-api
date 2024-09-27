@@ -108,13 +108,13 @@ model Device {
 }
 
 model Pond {
-  id                    String        @id
+  id                    String        @id             @default(cuid())
   name                  String        @default("")
   address               String        @default("")
   city                  String        @default("")
   seedDate              DateTime      @default(now())
   seedCount             Int           @default(0)
-  imageUrl              String        @db.Text
+  imageUrl              String        @db.Text        
   status                Boolean       @default(false)
   isFilled              Boolean       @default(false)
   createdAt             DateTime      @default(now())

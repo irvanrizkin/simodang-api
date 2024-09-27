@@ -23,4 +23,19 @@ export class SubscriptionService {
 		}
 		return true;
 	}
+
+	async getPondLimit(userId: string) {
+		const userSubscription = await this.prisma.subscription.findFirst({
+			where: {
+				userId,
+			},
+			include: {
+				pricingPlan: true,
+			}
+		});
+		if (userSubscription) {
+			return userSubscription.pricingPlan?.pondLimit || 1;
+		}
+		return 1;
+	}
 }
