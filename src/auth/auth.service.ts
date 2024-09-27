@@ -2,10 +2,14 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as admin from 'firebase-admin';
 import { randomBytes } from 'crypto';
+import { SubscriptionService } from 'src/subscription/subscription.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private subscriptionService: SubscriptionService,
+  ) {}
 
   async loginFirebase(uid: string) {
     try {
@@ -52,6 +56,14 @@ export class AuthService {
       return await this.createToken(user.id);
     }
     const newUser = await this.register(uid);
+
+    await this.subscriptionService.create({
+      userId: newUser.id,
+      expiredAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      status: true,
+      pricingPlanId: 'cm0pe5kwz0000wyk8zz8hgy55',
+    });
+
     return await this.createToken(newUser.id);
   }
 
