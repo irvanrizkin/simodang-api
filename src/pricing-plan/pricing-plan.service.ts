@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePricingPlanDto } from './dto/create-pricing-plan.dto';
 import { UpdatePricingPlanDto } from './dto/update-pricing-plan.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { PricingPlanEntity } from './entities/pricing-plan.entity';
 
 @Injectable()
 export class PricingPlanService {
@@ -10,7 +11,7 @@ export class PricingPlanService {
   async create(createPricingPlanDto: CreatePricingPlanDto) {
     return await this.prisma.pricingPlan.create({
       data: createPricingPlanDto,
-    })
+    });
   }
 
   async findAll() {
@@ -34,5 +35,24 @@ export class PricingPlanService {
     return await this.prisma.pricingPlan.delete({
       where: { id },
     });
+  }
+
+  async findFreePlan() {
+    const freePlan = await this.prisma.pricingPlan.findFirst({
+      where: { name: 'Paket A SIMODANG' },
+    });
+    if (!freePlan) {
+      throw new NotFoundException('Free plan not found');
+    }
+    return freePlan;
+  }
+
+  generateMidtransItem(pricingPlanEntity: PricingPlanEntity) {
+    return {
+      id: pricingPlanEntity.id,
+      name: pricingPlanEntity.name,
+      price: pricingPlanEntity.price,
+      quantity: 1,
+    };
   }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from './update-user.dto';
 import { AdminUpdateUserDto } from './admin-update-user.dto';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -25,5 +26,13 @@ export class UsersService {
       },
       data: adminUpdateUserDto,
     });
+  }
+
+  generateCustomerDetails(user: UserEntity) {
+    return {
+      first_name: user.name || null,
+      email: user.email,
+      phone: user.phoneNum || null,
+    };
   }
 }

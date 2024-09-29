@@ -7,5 +7,6 @@ import { AdminPricingPlanController } from './admin.pricing-plan.controller';
 @Module({
   controllers: [PricingPlanController, AdminPricingPlanController],
   providers: [PricingPlanService, PrismaService],
+  exports: [PricingPlanService],
 })
 export class PricingPlanModule {}
