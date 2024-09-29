@@ -203,6 +203,7 @@ model Transaction {
   id                    String        @id                   @default(cuid())
   status                Int           @db.TinyInt()         @default(0)
   amount                Int           @default(0)
+  expiredAt             DateTime      @default(now())
   createdAt             DateTime      @default(now())
   user                  User?         @relation(fields: [userId], references: [id])
   userId                String?

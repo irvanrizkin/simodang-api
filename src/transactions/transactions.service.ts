@@ -15,6 +15,7 @@ export class TransactionsService {
     transaction_details,
     item_details,
     customer_details,
+    expiry,
   }: {
     transaction_details: {
       order_id: string;
@@ -31,6 +32,10 @@ export class TransactionsService {
       email: string;
       phone: string;
     };
+    expiry: {
+      duration: number;
+      unit: 'days' | 'hours' | 'minutes';
+    };
   }) {
     try {
       return await firstValueFrom(
@@ -38,6 +43,7 @@ export class TransactionsService {
           transaction_details,
           item_details,
           customer_details,
+          expiry,
         }),
       );
     } catch (error) {
@@ -52,10 +58,12 @@ export class TransactionsService {
     userId,
     subscriptionId,
     price,
+    expiredAt,
   }: {
     userId: string;
     subscriptionId: string;
     price: number;
+    expiredAt: Date;
   }) {
     return await this.prisma.transaction.create({
       data: {
@@ -64,6 +72,7 @@ export class TransactionsService {
         amount: price,
         status: 2,
         paymentLink: '',
+        expiredAt,
       },
     });
   }

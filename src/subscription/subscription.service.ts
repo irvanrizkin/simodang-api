@@ -49,6 +49,7 @@ export class SubscriptionService {
       userId: user.id,
       subscriptionId: subscription.id,
       price,
+      expiredAt: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
     });
 
     // Step 4: Create payment link
@@ -60,6 +61,10 @@ export class SubscriptionService {
       },
       item_details: [item],
       customer_details: customerDetails,
+      expiry: {
+        duration: 1,
+        unit: 'days',
+      },
     });
 
     // Step 5: Update transaction with payment link
