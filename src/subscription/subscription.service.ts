@@ -95,14 +95,17 @@ export class SubscriptionService {
       where: {
         userId,
         status: 1,
+        expiredAt: {
+          gte: new Date(),
+        },
       },
       include: {
         pricingPlan: true,
       },
     });
     if (userSubscription) {
-      return userSubscription.pricingPlan?.pondLimit || 1;
+      return userSubscription.pricingPlan?.pondLimit || 0;
     }
-    return 1;
+    return 0;
   }
 }
