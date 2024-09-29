@@ -94,6 +94,7 @@ export class SubscriptionService {
     const userSubscription = await this.prisma.subscription.findFirst({
       where: {
         userId,
+        status: 1,
       },
       include: {
         pricingPlan: true,
