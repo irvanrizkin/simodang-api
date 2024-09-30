@@ -4,14 +4,12 @@ import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { TransactionsService } from 'src/transactions/transactions.service';
 import { PricingPlanService } from 'src/pricing-plan/pricing-plan.service';
 import { UserEntity } from 'src/users/entities/user.entity';
-import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class SubscriptionService {
   constructor(
     private transactionsService: TransactionsService,
     private pricingPlanService: PricingPlanService,
-    private userService: UsersService,
     private prisma: PrismaService,
   ) {}
 
@@ -53,7 +51,7 @@ export class SubscriptionService {
     });
 
     // Step 4: Create payment link
-    const customerDetails = this.userService.generateCustomerDetails(user);
+    const customerDetails = this.getCustomerDetailFromUser(user);
     const paymentLink = await this.transactionsService.createPaymentLink({
       transaction_details: {
         order_id: transaction.id,
@@ -90,8 +88,8 @@ export class SubscriptionService {
     return true;
   }
 
-  async getPondLimit(userId: string) {
-    const userSubscription = await this.prisma.subscription.findFirst({
+  async getSubscription(userId: string) {
+    return await this.prisma.subscription.findFirst({
       where: {
         userId,
         status: 1,
@@ -103,9 +101,18 @@ export class SubscriptionService {
         pricingPlan: true,
       },
     });
-    if (userSubscription) {
-      return userSubscription.pricingPlan?.pondLimit || 0;
-    }
-    return 0;
+  }
+
+  async getPondLimit(userId: string) {
+    const userSubscription = await this.getSubscription(userId);
+    return userSubscription?.pricingPlan?.pondLimit ?? 0;
+  }
+
+  getCustomerDetailFromUser(user: UserEntity) {
+    return {
+      first_name: user.name || null,
+      email: user.email,
+      phone: user.phoneNum || null,
+    };
   }
 }

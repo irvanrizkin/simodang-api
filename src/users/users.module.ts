@@ -3,8 +3,10 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AdminUsersController } from './admin.users.controller';
+import { SubscriptionModule } from 'src/subscription/subscription.module';
 
 @Module({
+  imports: [SubscriptionModule],
   controllers: [UsersController, AdminUsersController],
   providers: [UsersService, PrismaService],
   exports: [UsersService],
