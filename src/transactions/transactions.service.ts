@@ -1,14 +1,22 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { isAxiosError } from 'axios';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdateSubscriptionEvent } from 'src/subscription/event/update-subscription.event';
 
 @Injectable()
 export class TransactionsService {
   constructor(
     private prisma: PrismaService,
     private readonly httpService: HttpService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async createPaymentLink({
@@ -75,5 +83,79 @@ export class TransactionsService {
         expiredAt,
       },
     });
+  }
+
+  async getTransaction(transactionId: string) {
+    return await this.prisma.transaction.findUnique({
+      where: {
+        id: transactionId,
+      },
+    });
+  }
+
+  async updateTransactionThirdParty({ orderId }: { orderId: string }) {
+    if (!orderId) {
+      throw new BadRequestException('Order ID is required');
+    }
+    const orderIdSplit = orderId.split('-')[0];
+
+    const transaction = await this.getTransaction(orderIdSplit);
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
+
+    if ([0, 1].includes(transaction.status)) {
+      throw new InternalServerErrorException('Transaction already processed');
+    }
+
+    const response = await this.verifyTransaction(orderId);
+    const transactionStatus = response.data?.transaction_status || null;
+
+    if (['settlement', 'capture'].includes(transactionStatus)) {
+      const transaction = await this.prisma.transaction.update({
+        where: {
+          id: orderIdSplit,
+        },
+        data: {
+          status: 1,
+        },
+      });
+      this.eventEmitter.emit(
+        'subscription.update',
+        new UpdateSubscriptionEvent(transaction.subscriptionId, 1),
+      );
+      return transaction;
+    }
+
+    if (['cancel', 'deny', 'expire'].includes(transactionStatus)) {
+      const transaction = await this.prisma.transaction.update({
+        where: {
+          id: orderIdSplit,
+        },
+        data: {
+          status: 0,
+        },
+      });
+      this.eventEmitter.emit(
+        'subscription.update',
+        new UpdateSubscriptionEvent(transaction.subscriptionId, 0),
+      );
+      return transaction;
+    }
+
+    throw new InternalServerErrorException('Transaction failed');
+  }
+
+  async verifyTransaction(orderId: string) {
+    try {
+      return await firstValueFrom(
+        this.httpService.get(`/v2/${orderId}/status`),
+      );
+    } catch (error) {
+      if (isAxiosError(error)) {
+        throw new InternalServerErrorException(error.response?.data);
+      }
+      throw new InternalServerErrorException('Failed to verify transaction');
+    }
   }
 }

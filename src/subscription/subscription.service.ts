@@ -4,6 +4,9 @@ import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { TransactionsService } from 'src/transactions/transactions.service';
 import { PricingPlanService } from 'src/pricing-plan/pricing-plan.service';
 import { UserEntity } from 'src/users/entities/user.entity';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { UpdateSubscriptionEvent } from './event/update-subscription.event';
+import { CreateLogEvent } from 'src/log/event/create-log.event';
 
 @Injectable()
 export class SubscriptionService {
@@ -11,6 +14,7 @@ export class SubscriptionService {
     private transactionsService: TransactionsService,
     private pricingPlanService: PricingPlanService,
     private prisma: PrismaService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async create(createSubscriptionDto: CreateSubscriptionDto) {
@@ -114,5 +118,53 @@ export class SubscriptionService {
       email: user.email,
       phone: user.phoneNum || null,
     };
+  }
+
+  @OnEvent('subscription.update', { async: true })
+  async updateSubscription(updateSubscriptionEvent: UpdateSubscriptionEvent) {
+    const { subscriptionId, status } = updateSubscriptionEvent;
+
+    const subscription = await this.prisma.subscription.findUnique({
+      where: { id: subscriptionId },
+      include: { pricingPlan: true },
+    });
+    const duration = subscription?.pricingPlan?.duration ?? 0;
+    const pricingPlanId = subscription?.pricingPlan?.id ?? '';
+
+    if (status === 1) {
+      await this.prisma.subscription.update({
+        where: { id: subscriptionId },
+        data: {
+          status,
+          expiredAt: new Date(Date.now() + duration * 24 * 60 * 60 * 1000),
+        },
+      });
+      this.eventEmitter.emit(
+        'log.create',
+        new CreateLogEvent(
+          'subscription.update.active',
+          `Subscription ID: ${subscriptionId}, Pricing: ${pricingPlanId} activated`,
+        ),
+      );
+      return;
+    }
+
+    if (status === 2) {
+      await this.prisma.subscription.update({
+        where: { id: subscriptionId },
+        data: {
+          status,
+        },
+      });
+      this.eventEmitter.emit(
+        'log.create',
+        new CreateLogEvent(
+          'subscription.update.cancel',
+          `Subscription ID: ${subscriptionId}, Pricing: ${pricingPlanId} canceled`,
+        ),
+      );
+      return;
+    }
+    return;
   }
 }

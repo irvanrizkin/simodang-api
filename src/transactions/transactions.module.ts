@@ -3,6 +3,7 @@ import { TransactionsService } from './transactions.service';
 import { HttpModule } from '@nestjs/axios';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TransactionsController } from './transactions.controller';
 
 @Module({
   imports: [
@@ -21,5 +22,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
   providers: [TransactionsService, PrismaService],
   exports: [TransactionsService],
+  controllers: [TransactionsController],
 })
 export class TransactionsModule {}
