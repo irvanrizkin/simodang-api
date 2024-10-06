@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { randomBytes } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateLogEvent } from './event/create-log.event';
+import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class LogService {
@@ -16,6 +18,11 @@ export class LogService {
         summary,
       },
     });
+  }
+
+  @OnEvent('log.create')
+  async createLogEvent({ scope, summary }: CreateLogEvent) {
+    return await this.create(scope, summary);
   }
 
   async findAll() {

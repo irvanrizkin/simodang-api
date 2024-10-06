@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { CreatePondDto } from './dto/create-pond.dto';
 import { UpdatePondDto } from './dto/update-pond.dto';
-import { randomBytes } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdatePondPropDto } from './dto/update-pond-prop.dto';
 import { SubscriptionService } from 'src/subscription/subscription.service';
@@ -18,7 +17,10 @@ export class PondsService {
   ) {}
 
   async create(createPondDto: CreatePondDto, userId: string) {
-    const { deviceId: deviceIdStr } = createPondDto;
+    const {
+      deviceId: deviceIdStr,
+      imageUrl = 'https://placehold.co/600x400/png',
+    } = createPondDto;
 
     let deviceId = deviceIdStr;
 
@@ -39,6 +41,7 @@ export class PondsService {
     return await this.prisma.pond.create({
       data: {
         ...createPondDto,
+        imageUrl,
         userId,
         deviceId,
       },
@@ -61,9 +64,9 @@ export class PondsService {
 
     const enabledPonds = ponds.map((pond, index) => ({
       ...pond,
-      isEnabled: index < pondLimit
+      isEnabled: index < pondLimit,
     }));
-  
+
     return enabledPonds;
   }
 

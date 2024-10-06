@@ -27,6 +27,7 @@ model User {
   ponds         Pond[]
   tokens        Token[]
   subscriptions Subscription[]
+  transactions  Transaction[]
 
   @@map("user")
 }
@@ -186,12 +187,29 @@ model PricingPlan {
 
 model Subscription {
   id                    String        @id                   @default(cuid())
-  status                Boolean       @default(true)
+  status                Int           @db.TinyInt()         @default(0)
   expiredAt             DateTime      @default(now())
+  createdAt             DateTime      @default(now())
   user                  User?         @relation(fields: [userId], references: [id])
   userId                String?
   pricingPlan           PricingPlan?  @relation(fields: [pricingPlanId], references: [id])
   pricingPlanId         String?
+  transactions          Transaction[]
 
   @@map("subscription")
+}
+
+model Transaction {
+  id                    String        @id                   @default(cuid())
+  status                Int           @db.TinyInt()         @default(0)
+  amount                Int           @default(0)
+  expiredAt             DateTime      @default(now())
+  createdAt             DateTime      @default(now())
+  user                  User?         @relation(fields: [userId], references: [id])
+  userId                String?
+  subscription          Subscription? @relation(fields: [subscriptionId], references: [id])
+  subscriptionId        String?
+  paymentLink           String        @default("")
+
+  @@map("transaction")
 }

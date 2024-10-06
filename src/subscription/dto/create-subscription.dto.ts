@@ -1,6 +1,6 @@
 export class CreateSubscriptionDto {
-  status: boolean;
-	expiredAt: Date;
-	userId: string;
-	pricingPlanId: string;
+  status: number;
+  expiredAt: Date;
+  userId: string;
+  pricingPlanId: string;
 }

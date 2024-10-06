@@ -14,6 +14,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LogModule } from './log/log.module';
 import { PricingPlanModule } from './pricing-plan/pricing-plan.module';
 import { SubscriptionModule } from './subscription/subscription.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { SubscriptionModule } from './subscription/subscription.module';
     LogModule,
     PricingPlanModule,
     SubscriptionModule,
+    TransactionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
