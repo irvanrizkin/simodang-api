@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { TransactionsService } from 'src/transactions/transactions.service';
@@ -30,6 +34,12 @@ export class SubscriptionService {
     pricingPlanId: string;
     user: UserEntity;
   }) {
+    // Check if user already have subscription
+    const userSubscription = await this.getSubscription(user.id);
+    if (userSubscription) {
+      throw new ConflictException('User already have subscription');
+    }
+
     // Step 1: Check pricing plan
     const pricingPlan = await this.pricingPlanService.findOne(pricingPlanId);
     if (!pricingPlan) {

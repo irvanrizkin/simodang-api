@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePricingPlanDto } from './dto/create-pricing-plan.dto';
 import { UpdatePricingPlanDto } from './dto/update-pricing-plan.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -19,9 +23,13 @@ export class PricingPlanService {
   }
 
   async findOne(id: string) {
-    return await this.prisma.pricingPlan.findUnique({
+    const pricingPlan = await this.prisma.pricingPlan.findUnique({
       where: { id },
     });
+    if (pricingPlan.price === 0) {
+      throw new ForbiddenException('Free plan not found');
+    }
+    return pricingPlan;
   }
 
   async update(id: string, updatePricingPlanDto: UpdatePricingPlanDto) {
