@@ -49,9 +49,9 @@ export class SubscriptionService {
     user: UserEntity;
   }) {
     // Check if user already have subscription
-    const userSubscription = await this.getSubscription(user.id);
+    const userSubscription = await this.getPaidSubscriptions(user.id);
     if (userSubscription) {
-      throw new ConflictException('User already have subscription');
+      throw new ConflictException('User already have paid subscription');
     }
 
     // Step 1: Check pricing plan
@@ -105,11 +105,16 @@ export class SubscriptionService {
     });
   }
 
-  async getSubscription(userId: string) {
+  /**
+   * Get any paid subscription
+   * Used to ensure user not create double paid subscription
+   * @param userId
+   * @returns
+   */
+  async getPaidSubscriptions(userId: string) {
     return await this.prisma.subscription.findFirst({
       where: {
         userId,
-        status: 1,
         expiredAt: {
           gte: new Date(),
         },
@@ -121,8 +126,28 @@ export class SubscriptionService {
     });
   }
 
+  /**
+   * Get any active subscription
+   * Used for pond limit checking
+   * @param userId
+   */
+  async getActiveSubscription(userId: string) {
+    return await this.prisma.subscription.findFirst({
+      where: {
+        userId,
+        status: 1,
+        expiredAt: {
+          gte: new Date(),
+        },
+      },
+      include: {
+        pricingPlan: true,
+      },
+    });
+  }
+
   async getPondLimit(userId: string) {
-    const userSubscription = await this.getSubscription(userId);
+    const userSubscription = await this.getActiveSubscription(userId);
     return userSubscription?.pricingPlan?.pondLimit ?? 0;
   }
 
