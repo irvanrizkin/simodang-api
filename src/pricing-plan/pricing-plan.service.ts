@@ -47,7 +47,7 @@ export class PricingPlanService {
 
   async findFreePlan() {
     const freePlan = await this.prisma.pricingPlan.findFirst({
-      where: { name: 'Paket A SIMODANG' },
+      where: { price: 0 },
     });
     if (!freePlan) {
       throw new NotFoundException('Free plan not found');

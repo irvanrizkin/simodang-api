@@ -11,6 +11,7 @@ import { UserEntity } from 'src/users/entities/user.entity';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { UpdateSubscriptionEvent } from './event/update-subscription.event';
 import { CreateLogEvent } from 'src/log/event/create-log.event';
+import { SubscriptionDisableFreeEvent } from './event/subscription-disable-free.event';
 
 @Injectable()
 export class SubscriptionService {
@@ -27,6 +28,19 @@ export class SubscriptionService {
     });
   }
 
+  async createFreeSubscription(user: UserEntity) {
+    const freePlan = await this.pricingPlanService.findFreePlan();
+    const { duration = 0 } = freePlan;
+
+    return await this.create({
+      userId: user.id,
+      pricingPlanId: freePlan.id,
+      expiredAt: new Date(Date.now() + duration * 24 * 60 * 60 * 1000),
+      status: 1,
+      isPaid: false,
+    });
+  }
+
   async buySubscription({
     pricingPlanId,
     user,
@@ -35,9 +49,9 @@ export class SubscriptionService {
     user: UserEntity;
   }) {
     // Check if user already have subscription
-    const userSubscription = await this.getSubscription(user.id);
+    const userSubscription = await this.getPaidSubscriptions(user.id);
     if (userSubscription) {
-      throw new ConflictException('User already have subscription');
+      throw new ConflictException('User already have paid subscription');
     }
 
     // Step 1: Check pricing plan
@@ -54,6 +68,7 @@ export class SubscriptionService {
       pricingPlanId: pricingPlanId,
       expiredAt: new Date(Date.now() + duration * 24 * 60 * 60 * 1000),
       status: 0,
+      isPaid: true,
     });
 
     // Step 3: Create transaction
@@ -90,19 +105,33 @@ export class SubscriptionService {
     });
   }
 
-  async checkFreeSubscriber(userId: string) {
-    const userSubscription = await this.prisma.subscription.findFirst({
+  /**
+   * Get any paid subscription
+   * Used to ensure user not create double paid subscription
+   * @param userId
+   * @returns
+   */
+  async getPaidSubscriptions(userId: string) {
+    return await this.prisma.subscription.findFirst({
       where: {
         userId,
+        expiredAt: {
+          gte: new Date(),
+        },
+        isPaid: true,
+      },
+      include: {
+        pricingPlan: true,
       },
     });
-    if (userSubscription) {
-      return false;
-    }
-    return true;
   }
 
-  async getSubscription(userId: string) {
+  /**
+   * Get any active subscription
+   * Used for pond limit checking
+   * @param userId
+   */
+  async getActiveSubscription(userId: string) {
     return await this.prisma.subscription.findFirst({
       where: {
         userId,
@@ -118,7 +147,7 @@ export class SubscriptionService {
   }
 
   async getPondLimit(userId: string) {
-    const userSubscription = await this.getSubscription(userId);
+    const userSubscription = await this.getActiveSubscription(userId);
     return userSubscription?.pricingPlan?.pondLimit ?? 0;
   }
 
@@ -128,6 +157,21 @@ export class SubscriptionService {
       email: user.email,
       phone: user.phoneNum || null,
     };
+  }
+
+  @OnEvent('subscription.disable.free', { async: true })
+  async disableFreeSubscriptions(
+    subscriptionDisableFreeEvent: SubscriptionDisableFreeEvent,
+  ) {
+    await this.prisma.subscription.updateMany({
+      where: {
+        userId: subscriptionDisableFreeEvent.userId,
+        isPaid: false,
+      },
+      data: {
+        status: 0,
+      },
+    });
   }
 
   @OnEvent('subscription.update', { async: true })

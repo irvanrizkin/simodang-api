@@ -51,7 +51,7 @@ export class UsersController {
   @Get('/profile')
   async getProfile(@Request() req) {
     const { user } = req;
-    const subscription = await this.subscriptionService.getSubscription(
+    const subscription = await this.subscriptionService.getActiveSubscription(
       user.id,
     );
 
