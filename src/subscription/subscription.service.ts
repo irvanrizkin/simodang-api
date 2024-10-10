@@ -11,6 +11,7 @@ import { UserEntity } from 'src/users/entities/user.entity';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { UpdateSubscriptionEvent } from './event/update-subscription.event';
 import { CreateLogEvent } from 'src/log/event/create-log.event';
+import { SubscriptionDisableFreeEvent } from './event/subscription-disable-free.event';
 
 @Injectable()
 export class SubscriptionService {
@@ -24,6 +25,19 @@ export class SubscriptionService {
   async create(createSubscriptionDto: CreateSubscriptionDto) {
     return await this.prisma.subscription.create({
       data: createSubscriptionDto,
+    });
+  }
+
+  async createFreeSubscription(user: UserEntity) {
+    const freePlan = await this.pricingPlanService.findFreePlan();
+    const { duration = 0 } = freePlan;
+
+    return await this.create({
+      userId: user.id,
+      pricingPlanId: freePlan.id,
+      expiredAt: new Date(Date.now() + duration * 24 * 60 * 60 * 1000),
+      status: 1,
+      isPaid: false,
     });
   }
 
@@ -54,6 +68,7 @@ export class SubscriptionService {
       pricingPlanId: pricingPlanId,
       expiredAt: new Date(Date.now() + duration * 24 * 60 * 60 * 1000),
       status: 0,
+      isPaid: true,
     });
 
     // Step 3: Create transaction
@@ -90,18 +105,6 @@ export class SubscriptionService {
     });
   }
 
-  async checkFreeSubscriber(userId: string) {
-    const userSubscription = await this.prisma.subscription.findFirst({
-      where: {
-        userId,
-      },
-    });
-    if (userSubscription) {
-      return false;
-    }
-    return true;
-  }
-
   async getSubscription(userId: string) {
     return await this.prisma.subscription.findFirst({
       where: {
@@ -110,6 +113,7 @@ export class SubscriptionService {
         expiredAt: {
           gte: new Date(),
         },
+        isPaid: true,
       },
       include: {
         pricingPlan: true,
@@ -128,6 +132,21 @@ export class SubscriptionService {
       email: user.email,
       phone: user.phoneNum || null,
     };
+  }
+
+  @OnEvent('subscription.disable.free', { async: true })
+  async disableFreeSubscriptions(
+    subscriptionDisableFreeEvent: SubscriptionDisableFreeEvent,
+  ) {
+    await this.prisma.subscription.updateMany({
+      where: {
+        userId: subscriptionDisableFreeEvent.userId,
+        isPaid: false,
+      },
+      data: {
+        status: 0,
+      },
+    });
   }
 
   @OnEvent('subscription.update', { async: true })

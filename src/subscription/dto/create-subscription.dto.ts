@@ -3,4 +3,5 @@ export class CreateSubscriptionDto {
   expiredAt: Date;
   userId: string;
   pricingPlanId: string;
+  isPaid: boolean;
 }

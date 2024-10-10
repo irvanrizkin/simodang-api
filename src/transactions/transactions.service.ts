@@ -9,6 +9,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { isAxiosError } from 'axios';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { SubscriptionDisableFreeEvent } from 'src/subscription/event/subscription-disable-free.event';
 import { UpdateSubscriptionEvent } from 'src/subscription/event/update-subscription.event';
 
 @Injectable()
@@ -123,6 +124,10 @@ export class TransactionsService {
       this.eventEmitter.emit(
         'subscription.update',
         new UpdateSubscriptionEvent(transaction.subscriptionId, 1),
+      );
+      this.eventEmitter.emit(
+        'subscription.disable.free',
+        new SubscriptionDisableFreeEvent(transaction.userId),
       );
       return transaction;
     }

@@ -3,14 +3,12 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import * as admin from 'firebase-admin';
 import { randomBytes } from 'crypto';
 import { SubscriptionService } from 'src/subscription/subscription.service';
-import { PricingPlanService } from 'src/pricing-plan/pricing-plan.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private subscriptionService: SubscriptionService,
-    private pricingPlanService: PricingPlanService,
   ) {}
 
   async loginFirebase(uid: string) {
@@ -59,14 +57,7 @@ export class AuthService {
     }
     const newUser = await this.register(uid);
 
-    const freePlan = await this.pricingPlanService.findFreePlan();
-
-    await this.subscriptionService.create({
-      userId: newUser.id,
-      expiredAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-      status: 1,
-      pricingPlanId: freePlan.id,
-    });
+    await this.subscriptionService.createFreeSubscription(newUser);
 
     return await this.createToken(newUser.id);
   }
