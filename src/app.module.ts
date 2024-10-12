@@ -15,6 +15,7 @@ import { LogModule } from './log/log.module';
 import { PricingPlanModule } from './pricing-plan/pricing-plan.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { SidebarModule } from './sidebar/sidebar.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     PricingPlanModule,
     SubscriptionModule,
     TransactionsModule,
+    SidebarModule,
   ],
   controllers: [AppController],
   providers: [AppService],
