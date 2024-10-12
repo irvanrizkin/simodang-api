@@ -17,16 +17,6 @@ export class TokenGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
     if (!token) throw new UnauthorizedException('please provide token');
 
-    const user = await this.prisma.user.findFirst({
-      where: { token },
-    });
-
-    if (user) {
-      request['user'] = user;
-
-      return true;
-    }
-
     const tokenInstance = await this.prisma.token.findFirst({
       where: { token },
       include: { user: true },
