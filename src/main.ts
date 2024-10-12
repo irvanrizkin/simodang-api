@@ -5,7 +5,7 @@ import { ServiceAccount } from 'firebase-admin';
 import * as admin from 'firebase-admin';
 import { PrismaErrorHandlerFilter } from './filter/prisma.error.handler.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import * as basicAuth from 'express-basic-auth';
 
 const SWAGGER_ENVS = ['dev'];
@@ -26,6 +26,11 @@ async function bootstrap() {
   });
 
   app.enableCors();
+
+  app.enableVersioning({
+    defaultVersion: '1',
+    type: VersioningType.URI,
+  });
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
