@@ -5,7 +5,7 @@ import { DeviceErrorExample } from 'src/errors/examples/device-error-example';
 import { DevicePondEntity } from './entities/device-pond.entity';
 
 @Controller('iot/devices')
-@ApiTags('iot/')
+@ApiTags('iot/devices')
 export class IotDevicesController {
   constructor(private readonly devicesService: DevicesService) {}
 
