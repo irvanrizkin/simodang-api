@@ -214,3 +214,13 @@ model Transaction {
 
   @@map("transaction")
 }
+
+model Sidebar {
+  id                    String        @id                 @default(cuid())
+  label                 String        @default("")
+  parentId              String        @default("")
+  icon                  String        @default("")
+  order                 Int           @default(0)
+
+  @@map("sidebar")
+}
