@@ -6,6 +6,7 @@ import * as admin from 'firebase-admin';
 import { PrismaErrorHandlerFilter } from './filter/prisma.error.handler.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import * as basicAuth from 'express-basic-auth';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -25,6 +26,17 @@ async function bootstrap() {
   app.enableCors();
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+
+  app.use(
+    ['/api', '/api-json'],
+    basicAuth({
+      challenge: true,
+      users: {
+        [configService.get<string>('SWAGGER_USER')]:
+          configService.get<string>('SWAGGER_PASSWORD'),
+      },
+    }),
+  );
 
   const config = new DocumentBuilder()
     .setTitle('Simodang API')
