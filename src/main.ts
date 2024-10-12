@@ -8,6 +8,8 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import * as basicAuth from 'express-basic-auth';
 
+const SWAGGER_ENVS = ['dev'];
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
@@ -27,25 +29,27 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
-  app.use(
-    ['/api', '/api-json'],
-    basicAuth({
-      challenge: true,
-      users: {
-        [configService.get<string>('SWAGGER_USER')]:
-          configService.get<string>('SWAGGER_PASSWORD'),
-      },
-    }),
-  );
+  if (SWAGGER_ENVS.includes(configService.get<string>('NODE_ENV'))) {
+    app.use(
+      ['/api', '/api-json'],
+      basicAuth({
+        challenge: true,
+        users: {
+          [configService.get<string>('SWAGGER_USER')]:
+            configService.get<string>('SWAGGER_PASSWORD'),
+        },
+      }),
+    );
 
-  const config = new DocumentBuilder()
-    .setTitle('Simodang API')
-    .setDescription('The Simodang API description')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+    const config = new DocumentBuilder()
+      .setTitle('Simodang API')
+      .setDescription('The Simodang API description')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
+  }
 
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaErrorHandlerFilter(httpAdapter));
