@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { HttpModule } from '@nestjs/axios';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TransactionsController } from './transactions.controller';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
   imports: [
+    PrismaModule,
     HttpModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -20,7 +21,7 @@ import { TransactionsController } from './transactions.controller';
       inject: [ConfigService],
     }),
   ],
-  providers: [TransactionsService, PrismaService],
+  providers: [TransactionsService],
   exports: [TransactionsService],
   controllers: [TransactionsController],
 })
