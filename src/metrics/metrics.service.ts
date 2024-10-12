@@ -13,9 +13,9 @@ import { sub } from 'date-fns';
 import { ThresholdCheckEvent } from 'src/devices/events/threshold-check.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as admin from 'firebase-admin';
-import { LogService } from 'src/log/log.service';
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 import { MetricAvgQueryDto } from './dto/metric-avg-query.dto';
+import { CreateLogEvent } from 'src/log/event/create-log.event';
 
 @Injectable()
 export class MetricsService {
@@ -23,7 +23,6 @@ export class MetricsService {
     private prisma: PrismaService,
     private devicesService: DevicesService,
     private eventEmitter: EventEmitter2,
-    private logService: LogService,
   ) {}
 
   private toUtc(dateString: string) {
@@ -61,11 +60,17 @@ export class MetricsService {
 
     const device = await this.devicesService.findOne(deviceId ?? '');
     if (!device) {
-      await this.logService.create('metric/create', 'device not found');
+      this.eventEmitter.emit(
+        'log.create',
+        new CreateLogEvent('metric/create', 'device not found'),
+      );
       throw new NotFoundException('device not found when create metric');
     }
     if (device && device.masterId != masterId) {
-      await this.logService.create('metric/create', 'masterId not match');
+      this.eventEmitter.emit(
+        'log.create',
+        new CreateLogEvent('metric/create', 'masterId not match'),
+      );
       throw new BadRequestException('master id not match');
     }
 

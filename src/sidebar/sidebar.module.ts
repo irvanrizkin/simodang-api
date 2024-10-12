@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { SidebarService } from './sidebar.service';
 import { SidebarController } from './sidebar.controller';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { AdminSidebarController } from './admin.sidebar.controller';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
-  providers: [SidebarService, PrismaService],
+  imports: [PrismaModule],
+  providers: [SidebarService],
   controllers: [SidebarController, AdminSidebarController],
 })
 export class SidebarModule {}

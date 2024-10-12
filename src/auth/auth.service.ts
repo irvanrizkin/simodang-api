@@ -11,40 +11,6 @@ export class AuthService {
     private subscriptionService: SubscriptionService,
   ) {}
 
-  async loginFirebase(uid: string) {
-    try {
-      const user = await admin.auth().getUser(uid);
-      const { email, displayName: name, photoURL: photo } = user;
-      const id = randomBytes(5).toString('hex');
-      const token = randomBytes(30).toString('hex');
-      return await this.prisma.user.upsert({
-        where: {
-          uid,
-        },
-        create: {
-          id,
-          email,
-          uid,
-          name,
-          photo,
-          token,
-        },
-        update: {
-          token,
-        },
-      });
-    } catch (error) {
-      throw new UnauthorizedException('wrong credential');
-    }
-  }
-
-  async logout(id: string) {
-    return await this.prisma.user.update({
-      where: { id },
-      data: { token: '' },
-    });
-  }
-
   async authenticate(uid: string) {
     const user = await this.prisma.user.findFirst({
       where: {
@@ -94,7 +60,7 @@ export class AuthService {
     });
   }
 
-  async logoutV2(token: string) {
+  async logout(token: string) {
     return await this.prisma.token.deleteMany({
       where: {
         token,

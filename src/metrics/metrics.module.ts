@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MetricsService } from './metrics.service';
 import { MetricsController } from './metrics.controller';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { DevicesModule } from 'src/devices/devices.module';
-import { LogModule } from 'src/log/log.module';
 import { AdminMetricsController } from './admin.metrics.controller';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
-  imports: [DevicesModule, LogModule],
+  imports: [PrismaModule, DevicesModule],
   controllers: [MetricsController, AdminMetricsController],
-  providers: [MetricsService, PrismaService],
+  providers: [MetricsService],
   exports: [MetricsService],
 })
 export class MetricsModule {}
