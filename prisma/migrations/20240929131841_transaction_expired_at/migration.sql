@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `transaction` ADD COLUMN `expiredAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
