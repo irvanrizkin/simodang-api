@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMetricDto } from './dto/create-metric.dto';
-import { randomBytes } from 'crypto';
 import { MetricQueryDto } from './dto/metric-query.dto';
 import { DevicesService } from 'src/devices/devices.service';
 import { Prisma } from '@prisma/client';
@@ -43,9 +42,6 @@ export class MetricsService {
       turbidities_val: turbidity,
       created_at: createdAt,
     } = createMetricDto;
-
-    const id = `MET${randomBytes(5).toString('hex')}`;
-    const tempId = `TMP${randomBytes(5).toString('hex')}`;
 
     const dateCreate = this.toUtc(createdAt);
     if (dateCreate.toString() === 'Invalid Date') {
@@ -108,7 +104,6 @@ export class MetricsService {
     if (device && device.isSaved === true) {
       return await this.prisma.metric.create({
         data: {
-          id,
           deviceId,
           pondId,
           temperature,
@@ -125,7 +120,6 @@ export class MetricsService {
     if (device && device.isSaved === false) {
       return await this.prisma.metricTemp.create({
         data: {
-          id: tempId,
           deviceId,
           pondId,
           temperature,
@@ -141,7 +135,6 @@ export class MetricsService {
 
     return await this.prisma.metricTemp.create({
       data: {
-        id: tempId,
         deviceId,
         pondId,
         temperature,
