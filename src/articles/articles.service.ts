@@ -2,20 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { randomBytes } from 'crypto';
 
 @Injectable()
 export class ArticlesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createArticleDto: CreateArticleDto) {
-    const id = `ART${randomBytes(5).toString('hex')}`;
-
     return await this.prisma.article.create({
-      data: {
-        id,
-        ...createArticleDto,
-      },
+      data: createArticleDto,
     });
   }
 
