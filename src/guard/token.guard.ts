@@ -3,47 +3,54 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
-  ForbiddenException,
 } from '@nestjs/common';
 import { Request } from 'express';
+import * as admin from 'firebase-admin';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class TokenGuard implements CanActivate {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) throw new UnauthorizedException('please provide token');
 
-    const user = await this.prisma.user.findFirst({
-      where: { token },
-    });
+    try {
+      const { uid } = await this.verifyToken(token);
 
-    if (user) {
+      if (!uid) throw new UnauthorizedException('invalid firebase token');
+
+      const user = await this.getUserByUid(uid);
+      if (!user) throw new UnauthorizedException('user not found');
+
       request['user'] = user;
 
       return true;
+    } catch (error) {
+      throw new UnauthorizedException('invalid firebase token');
     }
-
-    const tokenInstance = await this.prisma.token.findFirst({
-      where: { token },
-      include: { user: true },
-    });
-    if (!tokenInstance)
-      throw new ForbiddenException('token not match any user');
-
-    const { user: userV2 } = tokenInstance;
-
-    request['user'] = userV2;
-    request['token'] = token;
-
-    return true;
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
+  }
+
+  private async verifyToken(token: string) {
+    try {
+      return await admin.auth().verifyIdToken(token);
+    } catch (error) {
+      throw new UnauthorizedException('invalid firebase token');
+    }
+  }
+
+  async getUserByUid(uid: string) {
+    return await this.prisma.user.findFirst({
+      where: {
+        uid,
+      },
+    });
   }
 }

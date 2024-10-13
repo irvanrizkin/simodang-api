@@ -5,7 +5,10 @@ import { ServiceAccount } from 'firebase-admin';
 import * as admin from 'firebase-admin';
 import { PrismaErrorHandlerFilter } from './filter/prisma.error.handler.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
+import * as basicAuth from 'express-basic-auth';
+
+const SWAGGER_ENVS = ['dev'];
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -24,34 +27,37 @@ async function bootstrap() {
 
   app.enableCors();
 
+  app.enableVersioning({
+    defaultVersion: '1',
+    type: VersioningType.URI,
+  });
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
-  const config = new DocumentBuilder()
-    .setTitle('Simodang API')
-    .setDescription('The Simodang API description')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .addTag('articles')
-    .addTag('admin/articles')
-    .addTag('auth')
-    .addTag('devices')
-    .addTag('admin/devices')
-    .addTag('iot/devices')
-    .addTag('admin/log')
-    .addTag('admin/masters')
-    .addTag('metrics')
-    .addTag('admin/metrics')
-    .addTag('notifications')
-    .addTag('admin/ponds')
-    .addTag('ponds')
-    .addTag('users')
-    .addTag('admin/users')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  if (SWAGGER_ENVS.includes(configService.get<string>('NODE_ENV'))) {
+    app.use(
+      ['/api', '/api-json'],
+      basicAuth({
+        challenge: true,
+        users: {
+          [configService.get<string>('SWAGGER_USER')]:
+            configService.get<string>('SWAGGER_PASSWORD'),
+        },
+      }),
+    );
+
+    const config = new DocumentBuilder()
+      .setTitle('Simodang API')
+      .setDescription('The Simodang API description')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
+  }
 
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaErrorHandlerFilter(httpAdapter));
-  await app.listen(5000);
+  await app.listen(8000);
 }
 bootstrap();

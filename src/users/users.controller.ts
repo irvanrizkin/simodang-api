@@ -16,6 +16,7 @@ import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
 import { TokenGuard } from 'src/guard/token.guard';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './update-user.dto';
+import { SubscriptionService } from 'src/subscription/subscription.service';
 
 @Controller('users')
 @UseGuards(TokenGuard)
@@ -42,13 +43,24 @@ import { UpdateUserDto } from './update-user.dto';
   },
 })
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly subscriptionService: SubscriptionService,
+  ) {}
 
   @Get('/profile')
-  getProfile(@Request() req) {
+  async getProfile(@Request() req) {
     const { user } = req;
+    const subscription = await this.subscriptionService.getActiveSubscription(
+      user.id,
+    );
 
-    return user;
+    const name = subscription?.pricingPlan?.name || 'Tidak ada paket';
+
+    return {
+      ...user,
+      pricingName: name,
+    };
   }
 
   @Patch('/update')

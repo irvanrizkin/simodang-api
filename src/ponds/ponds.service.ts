@@ -5,17 +5,22 @@ import {
 } from '@nestjs/common';
 import { CreatePondDto } from './dto/create-pond.dto';
 import { UpdatePondDto } from './dto/update-pond.dto';
-import { randomBytes } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdatePondPropDto } from './dto/update-pond-prop.dto';
+import { SubscriptionService } from 'src/subscription/subscription.service';
 
 @Injectable()
 export class PondsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private subscriptionService: SubscriptionService,
+  ) {}
 
   async create(createPondDto: CreatePondDto, userId: string) {
-    const id = `PON${randomBytes(5).toString('hex')}`;
-    const { deviceId: deviceIdStr } = createPondDto;
+    const {
+      deviceId: deviceIdStr,
+      imageUrl = 'https://placehold.co/600x400/png',
+    } = createPondDto;
 
     let deviceId = deviceIdStr;
 
@@ -23,10 +28,20 @@ export class PondsService {
       deviceId = null;
     }
 
+    const pondLimit = await this.subscriptionService.getPondLimit(userId);
+
+    const ponds = await this.prisma.pond.findMany({
+      where: { userId },
+    });
+
+    if (ponds.length >= pondLimit) {
+      throw new ForbiddenException('you have reached pond limit');
+    }
+
     return await this.prisma.pond.create({
       data: {
         ...createPondDto,
-        id,
+        imageUrl,
         userId,
         deviceId,
       },
@@ -38,12 +53,21 @@ export class PondsService {
   }
 
   async findAllByUser(userId: string) {
-    return this.prisma.pond.findMany({
+    const pondLimit = await this.subscriptionService.getPondLimit(userId);
+
+    const ponds = await this.prisma.pond.findMany({
       where: { userId },
       orderBy: {
         createdAt: 'desc',
       },
     });
+
+    const enabledPonds = ponds.map((pond, index) => ({
+      ...pond,
+      isEnabled: index < pondLimit,
+    }));
+
+    return enabledPonds;
   }
 
   async findOne(id: string) {
