@@ -1,4 +1,10 @@
-import { Controller, Param, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  InternalServerErrorException,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { TokenGuard } from 'src/guard/token.guard';
 import {
@@ -12,11 +18,12 @@ import { AuthErrorExample } from 'src/errors/examples/auth-error-example';
 
 @Controller('auth')
 @ApiTags('auth')
+@UseGuards(TokenGuard)
+@ApiBearerAuth()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/logout')
-  @UseGuards(TokenGuard)
   @ApiBearerAuth()
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
@@ -38,13 +45,11 @@ export class AuthController {
       },
     },
   })
-  logout(@Request() req) {
-    const { token } = req;
-
-    return this.authService.logout(token);
+  logout() {
+    return new InternalServerErrorException('Not implemented');
   }
 
-  @Post('/:firebaseUid')
+  @Post()
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
     content: {
@@ -55,7 +60,9 @@ export class AuthController {
       },
     },
   })
-  async authenticate(@Param('firebaseUid') uid: string) {
+  async authenticate(@Request() req) {
+    const { uid } = req.user;
+
     return await this.authService.authenticate(uid);
   }
 }
