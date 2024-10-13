@@ -8,7 +8,6 @@ export class UserEntity implements User {
   phoneNum: string;
   address: string;
   photo: string;
-  token: string;
   role: string;
   createdAt: Date;
 }
