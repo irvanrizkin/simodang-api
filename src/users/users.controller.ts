@@ -56,10 +56,12 @@ export class UsersController {
     );
 
     const name = subscription?.pricingPlan?.name || 'Tidak ada paket';
+    const pondLimit = subscription?.pricingPlan?.pondLimit || 0;
 
     return {
       ...user,
       pricingName: name,
+      pondLimit,
     };
   }
 
