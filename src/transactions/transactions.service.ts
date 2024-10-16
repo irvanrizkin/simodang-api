@@ -163,4 +163,12 @@ export class TransactionsService {
       throw new InternalServerErrorException('Failed to verify transaction');
     }
   }
+
+  async getAllTransactionsByUser(userId: string) {
+    return await this.prisma.transaction.findMany({
+      where: {
+        userId,
+      },
+    });
+  }
 }
