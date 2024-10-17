@@ -94,6 +94,21 @@ export class TransactionsService {
     });
   }
 
+  async getTransactionWithPricingPlan(transactionId: string) {
+    return await this.prisma.transaction.findUnique({
+      where: {
+        id: transactionId,
+      },
+      include: {
+        subscription: {
+          include: {
+            pricingPlan: true,
+          },
+        },
+      },
+    });
+  }
+
   async updateTransactionThirdParty({ orderId }: { orderId: string }) {
     if (!orderId) {
       throw new BadRequestException('Order ID is required');
@@ -168,6 +183,13 @@ export class TransactionsService {
     return await this.prisma.transaction.findMany({
       where: {
         userId,
+      },
+      include: {
+        subscription: {
+          include: {
+            pricingPlan: true,
+          },
+        },
       },
     });
   }

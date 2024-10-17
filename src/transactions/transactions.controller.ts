@@ -2,7 +2,9 @@ import {
   BadRequestException,
   Body,
   Controller,
+  ForbiddenException,
   Get,
+  Param,
   Post,
   Request,
   UseGuards,
@@ -38,5 +40,20 @@ export class TransactionsController {
   getAllTransactionByUser(@Request() req) {
     const user: UserEntity = req?.user ?? null;
     return this.transactionsService.getAllTransactionsByUser(user?.id ?? '');
+  }
+
+  @Get('/:id')
+  @UseGuards(TokenGuard)
+  @ApiBearerAuth()
+  async getTransaction(@Param('id') id: string, @Request() req) {
+    const user: UserEntity = req?.user ?? null;
+    const transaction =
+      await this.transactionsService.getTransactionWithPricingPlan(id);
+
+    if (transaction?.userId !== user?.id) {
+      throw new ForbiddenException('Transaction is not owned by you');
+    }
+
+    return transaction;
   }
 }
