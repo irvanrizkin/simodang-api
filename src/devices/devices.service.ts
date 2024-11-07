@@ -6,15 +6,16 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { Device } from '@prisma/client';
 import { MetricParamDto } from './dto/metric-param.dto';
 import { NotificationsService } from 'src/notifications/notifications.service';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { ThresholdCheckEvent } from './events/threshold-check.event';
-import * as admin from 'firebase-admin';
+import { FcmSimpleEvent } from 'src/fcm/events/fcm-simple.event';
 
 @Injectable()
 export class DevicesService {
   constructor(
     private prisma: PrismaService,
     private notificationsService: NotificationsService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async create(createDeviceDto: CreateDeviceDto) {
@@ -159,12 +160,14 @@ export class DevicesService {
         title: `Kolam ${name} berada dalam kondisi tidak baik`,
         message: `Parameter yang terdampak ${outOfRange.toString()}`,
       });
-      await admin.messaging().sendToTopic(id, {
-        notification: {
-          title: `Kolam ${name} berada dalam kondisi tidak baik`,
-          body: `Parameter yang terdampak ${outOfRange.toString()}`,
-        },
-      });
+
+      const fcmSimpleEvent = new FcmSimpleEvent(
+        id,
+        `Kolam ${name} berada dalam kondisi tidak baik`,
+        `Parameter yang terdampak ${outOfRange.toString()}`,
+      );
+
+      this.eventEmitter.emit('fcm.simple', fcmSimpleEvent);
     }
     await this.prisma.device.update({
       where: { id: deviceId },
