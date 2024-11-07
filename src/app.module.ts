@@ -16,6 +16,7 @@ import { PricingPlanModule } from './pricing-plan/pricing-plan.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { SidebarModule } from './sidebar/sidebar.module';
+import { FcmModule } from './fcm/fcm.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { SidebarModule } from './sidebar/sidebar.module';
     SubscriptionModule,
     TransactionsModule,
     SidebarModule,
+    FcmModule,
   ],
   controllers: [AppController],
   providers: [AppService],

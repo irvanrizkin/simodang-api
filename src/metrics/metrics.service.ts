@@ -11,10 +11,10 @@ import { Prisma } from '@prisma/client';
 import { sub } from 'date-fns';
 import { ThresholdCheckEvent } from 'src/devices/events/threshold-check.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import * as admin from 'firebase-admin';
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 import { MetricAvgQueryDto } from './dto/metric-avg-query.dto';
 import { CreateLogEvent } from 'src/log/event/create-log.event';
+import { FcmMetricEvent } from 'src/fcm/events/fcm-metric.event';
 
 @Injectable()
 export class MetricsService {
@@ -83,22 +83,16 @@ export class MetricsService {
       );
       this.eventEmitter.emit('device.threshold', thresholdCheckEvent);
 
-      await admin.messaging().sendToTopic(
+      const fcmMetricEvent = new FcmMetricEvent(
         `${pondId}-realtime`,
-        {
-          data: {
-            temperature: temperature.toString(),
-            ph: ph.toString(),
-            tdo: tdo.toString(),
-            tds: tds.toString(),
-            turbidity: turbidity.toString(),
-          },
-        },
-        {
-          contentAvailable: true,
-          priority: 'high',
-        },
+        temperature.toString(),
+        ph.toString(),
+        tdo.toString(),
+        tds.toString(),
+        turbidity.toString(),
       );
+
+      this.eventEmitter.emit('fcm.metric', fcmMetricEvent);
     }
 
     if (device && device.isSaved === true) {
