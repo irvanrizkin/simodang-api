@@ -119,6 +119,7 @@ export class SubscriptionService {
           gte: new Date(),
         },
         isPaid: true,
+        status: 1,
       },
       include: {
         pricingPlan: true,
