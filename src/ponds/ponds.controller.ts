@@ -26,9 +26,10 @@ import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
 import { UpdatePondPropDto } from './dto/update-pond-prop.dto';
 import { PondErrorExample } from 'src/errors/examples/pond-error-example';
 import { PondEntity } from './entities/pond.entity';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('ponds')
-@UseGuards(TokenGuard)
+@UseGuards(TokenGuard, UserGuard)
 @ApiTags('ponds')
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({

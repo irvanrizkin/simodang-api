@@ -3,9 +3,10 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SubscriptionService } from './subscription.service';
 import { TokenGuard } from 'src/guard/token.guard';
 import { UserEntity } from 'src/users/entities/user.entity';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('subscription')
-@UseGuards(TokenGuard)
+@UseGuards(TokenGuard, UserGuard)
 @ApiTags('subscription')
 @ApiBearerAuth()
 export class SubscriptionController {

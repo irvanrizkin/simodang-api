@@ -17,9 +17,10 @@ import { TokenGuard } from 'src/guard/token.guard';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './update-user.dto';
 import { SubscriptionService } from 'src/subscription/subscription.service';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('users')
-@UseGuards(TokenGuard)
+@UseGuards(TokenGuard, UserGuard)
 @ApiTags('users')
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({

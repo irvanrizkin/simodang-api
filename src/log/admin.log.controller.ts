@@ -11,9 +11,10 @@ import {
 } from '@nestjs/swagger';
 import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
 import { LogEntity } from './entities/log.entity';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('admin/log')
-@UseGuards(TokenGuard, AdminGuard)
+@UseGuards(TokenGuard, UserGuard, AdminGuard)
 @ApiTags('admin/log')
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({

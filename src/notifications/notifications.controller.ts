@@ -20,9 +20,10 @@ import {
 import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
 import { NotificationErrorExample } from 'src/errors/examples/notification-error-example';
 import { NotificationEntity } from './entities/notification.entity';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('notifications')
-@UseGuards(TokenGuard)
+@UseGuards(TokenGuard, UserGuard)
 @ApiTags('notifications')
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({

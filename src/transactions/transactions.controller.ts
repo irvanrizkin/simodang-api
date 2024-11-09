@@ -14,6 +14,7 @@ import { UpdateTransactionThirdPartyDto } from './dto/update-transaction-thirdpa
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { TokenGuard } from 'src/guard/token.guard';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('transactions')
 @ApiTags('transaction')
@@ -35,7 +36,7 @@ export class TransactionsController {
   }
 
   @Get()
-  @UseGuards(TokenGuard)
+  @UseGuards(TokenGuard, UserGuard)
   @ApiBearerAuth()
   getAllTransactionByUser(@Request() req) {
     const user: UserEntity = req?.user ?? null;
@@ -43,7 +44,7 @@ export class TransactionsController {
   }
 
   @Get('/:id')
-  @UseGuards(TokenGuard)
+  @UseGuards(TokenGuard, UserGuard)
   @ApiBearerAuth()
   async getTransaction(@Param('id') id: string, @Request() req) {
     const user: UserEntity = req?.user ?? null;
