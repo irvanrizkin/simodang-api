@@ -14,9 +14,10 @@ import { UpdatePricingPlanDto } from './dto/update-pricing-plan.dto';
 import { TokenGuard } from 'src/guard/token.guard';
 import { AdminGuard } from 'src/guard/admin.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('admin/pricing-plan')
-@UseGuards(TokenGuard, AdminGuard)
+@UseGuards(TokenGuard, UserGuard, AdminGuard)
 @ApiTags('admin/pricing-plan')
 @ApiBearerAuth()
 export class AdminPricingPlanController {

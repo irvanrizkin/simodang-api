@@ -11,9 +11,10 @@ import { AdminGuard } from 'src/guard/admin.guard';
 import { TokenGuard } from 'src/guard/token.guard';
 import { PondsService } from './ponds.service';
 import { PondErrorExample } from 'src/errors/examples/pond-error-example';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('admin/ponds')
-@UseGuards(TokenGuard, AdminGuard)
+@UseGuards(TokenGuard, UserGuard, AdminGuard)
 @ApiTags('admin/ponds')
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({

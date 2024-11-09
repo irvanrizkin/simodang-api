@@ -10,9 +10,10 @@ import {
 } from '@nestjs/swagger';
 import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
 import { AdminUpdateUserDto } from './admin-update-user.dto';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('admin/users')
-@UseGuards(TokenGuard, AdminGuard)
+@UseGuards(TokenGuard, UserGuard, AdminGuard)
 @ApiTags('admin/users')
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({

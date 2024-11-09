@@ -4,9 +4,10 @@ import { SidebarService } from './sidebar.service';
 import { TokenGuard } from 'src/guard/token.guard';
 import { AdminGuard } from 'src/guard/admin.guard';
 import { CreateSidebarDto } from './dto/create_sidebar.dto';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('admin/sidebar')
-@UseGuards(TokenGuard, AdminGuard)
+@UseGuards(TokenGuard, UserGuard, AdminGuard)
 @ApiTags('admin/sidebar')
 @ApiBearerAuth()
 export class AdminSidebarController {

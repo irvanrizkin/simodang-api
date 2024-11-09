@@ -17,16 +17,9 @@ export class PondsService {
   ) {}
 
   async create(createPondDto: CreatePondDto, userId: string) {
-    const {
-      deviceId: deviceIdStr,
-      imageUrl = 'https://placehold.co/600x400/png',
-    } = createPondDto;
-
-    let deviceId = deviceIdStr;
-
-    if (!deviceId) {
-      deviceId = null;
-    }
+    // deviceId will null if not provided, no device attached
+    const { deviceId = null, imageUrl = 'https://placehold.co/600x400/png' } =
+      createPondDto;
 
     const pondLimit = await this.subscriptionService.getPondLimit(userId);
 
@@ -84,17 +77,12 @@ export class PondsService {
   }
 
   async update(id: string, updatePondDto: UpdatePondDto, userId: string) {
-    const { isFilled, seedDate: date, deviceId: deviceIdStr } = updatePondDto;
+    // deviceId will undefined if not provided, no device changed
+    const { isFilled, seedDate: date, deviceId } = updatePondDto;
     const pond = await this.findOne(id);
     const dateObj = new Date(date);
     const seedDate =
       dateObj.toString() === 'Invalid Date' ? undefined : dateObj;
-
-    let deviceId = deviceIdStr;
-
-    if (!deviceId) {
-      deviceId = null;
-    }
 
     if (!pond) {
       throw new NotFoundException('pond not found');

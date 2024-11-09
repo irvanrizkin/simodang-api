@@ -14,9 +14,10 @@ import {
 import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
 import { MetricEntity } from './entities/metric.entity';
 import { MetricErrorExample } from 'src/errors/examples/metric-error-example';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('admin/metrics')
-@UseGuards(TokenGuard, AdminGuard)
+@UseGuards(TokenGuard, UserGuard, AdminGuard)
 @ApiTags('admin/metrics')
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({
