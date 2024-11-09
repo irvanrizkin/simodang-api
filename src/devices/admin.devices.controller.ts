@@ -25,9 +25,10 @@ import {
 import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
 import { DeviceErrorExample } from 'src/errors/examples/device-error-example';
 import { DeviceEntity } from './entities/device.entity';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('admin/devices')
-@UseGuards(TokenGuard, AdminGuard)
+@UseGuards(TokenGuard, UserGuard, AdminGuard)
 @ApiTags('admin/devices')
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({

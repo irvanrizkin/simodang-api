@@ -61,7 +61,7 @@ export class AuthController {
     },
   })
   async authenticate(@Request() req) {
-    const { uid } = req.user;
+    const { uid } = req;
 
     return await this.authService.authenticate(uid);
   }

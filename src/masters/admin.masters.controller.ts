@@ -25,9 +25,10 @@ import {
 import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
 import { MasterErrorExample } from 'src/errors/examples/master-error.example';
 import { MasterEntity } from './entities/master.entity';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('admin/masters')
-@UseGuards(TokenGuard, AdminGuard)
+@UseGuards(TokenGuard, UserGuard, AdminGuard)
 @ApiTags('admin/masters')
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({

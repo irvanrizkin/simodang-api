@@ -13,10 +13,11 @@ import { GuardErrorExample } from 'src/errors/examples/guard-error-example';
 import { DeviceEntity } from './entities/device.entity';
 import { DevicePondEntity } from './entities/device-pond.entity';
 import { DeviceErrorExample } from 'src/errors/examples/device-error-example';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('devices')
 @ApiTags('devices')
-@UseGuards(TokenGuard)
+@UseGuards(TokenGuard, UserGuard)
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({
   description: 'Unauthorized',
