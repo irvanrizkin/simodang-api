@@ -49,7 +49,7 @@ async function bootstrap() {
     const config = new DocumentBuilder()
       .setTitle('Simodang API')
       .setDescription('The Simodang API description')
-      .setVersion('1.2.2')
+      .setVersion('1.2.3')
       .addBearerAuth()
       .build();
     const document = SwaggerModule.createDocument(app, config);
