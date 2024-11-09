@@ -18,8 +18,7 @@ export class PondsService {
 
   async create(createPondDto: CreatePondDto, userId: string) {
     // deviceId will null if not provided, no device attached
-    const { deviceId = null, imageUrl = 'https://placehold.co/600x400/png' } =
-      createPondDto;
+    const { deviceId = null, imageUrl } = createPondDto;
 
     const pondLimit = await this.subscriptionService.getPondLimit(userId);
 
@@ -34,7 +33,7 @@ export class PondsService {
     return await this.prisma.pond.create({
       data: {
         ...createPondDto,
-        imageUrl,
+        imageUrl: imageUrl ?? 'https://placehold.co/600x400/png',
         userId,
         deviceId,
       },
@@ -78,7 +77,7 @@ export class PondsService {
 
   async update(id: string, updatePondDto: UpdatePondDto, userId: string) {
     // deviceId will undefined if not provided, no device changed
-    const { isFilled, seedDate: date, deviceId } = updatePondDto;
+    const { isFilled, seedDate: date, deviceId, imageUrl } = updatePondDto;
     const pond = await this.findOne(id);
     const dateObj = new Date(date);
     const seedDate =
@@ -92,10 +91,12 @@ export class PondsService {
       throw new ForbiddenException('this pond not yours');
     }
 
+    // if imageUrl not provided, use the old one
     return await this.prisma.pond.update({
       where: { id },
       data: {
         ...updatePondDto,
+        imageUrl: imageUrl ?? pond.imageUrl,
         isFilled,
         seedDate,
         deviceId,
